@@ -1,0 +1,520 @@
+{>"layouts/master_3" /}
+<link rel="stylesheet" type="text/css" href="../css/hack.css">
+
+<script type="text/javascript">
+
+var available_conditions = [{
+	"type":"sendmoney",
+	"currency":"",
+	"repeat_threshold":"",
+	"platform":"",
+	"sender_country":"",
+	"sender_acc_no":"",
+	"sender_pxp":"",
+	"receiver_country":"",
+	"receiver_acc_no":"",
+	"receiver_pxp":"",
+	"min_amount":"",
+	"input_mapper":""
+}];
+
+var available_actions = [{
+	"type":"masspay",
+	"currency":"",
+	"funder_accno":"",
+	"receiver_accno":"",
+	"amount":""
+}];
+
+var conditions_array = [];
+var actions_array = [];
+
+function cond_save(form_id, condition, condition_type){
+
+	$('#selected_btn'+form_id).remove();
+
+
+	var btn_create = $('<button>').addClass('btn').addClass('btn-success').addClass('btn-block').attr({'data-target':'#sendmoney_modal', 'data-toggle':'modal', 'data-whatever':'@mdo', 'id':'selected_btn'+form_id});
+	$('#selected_cond_btns').append(btn_create);
+
+	$('#selected_btn'+form_id).append('<p>'+condition+'</p>');	
+
+	var row = $('<div>').addClass('row');
+	for(var i=0; i<$('#'+form_id).find("input").length; i++){
+		var col = $('<div>').addClass('col-md-12');
+		var text = '<span>' + $('#'+form_id).find("input")[i].parentNode.childNodes[0].innerHTML + ' ' + $('#'+form_id).find("input")[i].value + '</span>';
+		if($('#'+form_id).find("input")[i].value != ""){
+			col.append(text);
+			row.append(col);
+		}
+	}
+	for(var i=0; i<$('#'+form_id).find("select").length; i++){
+		var col = $('<div>').addClass('col-md-12');
+		var text = '<span>' + $('#'+form_id).find("select")[i].parentNode.childNodes[0].innerHTML + $('#'+form_id).find("select")[i].value + '</span>';
+		if($('#'+form_id).find("select")[i].value != ""){
+			col.append(text);
+			row.append(col);
+		}
+	}
+
+
+	var flagFound = 0;
+	for(var i=0; i<available_conditions.length; i++){
+		if(available_conditions[i].type == condition_type){
+			if(condition_type == 'sendmoney'){
+				var cond = available_conditions[i];
+				console.log($('#cond_sendmoney_currency'));
+				cond.currency = $('#cond_sendmoney_currency')[0].value;
+				cond.platform = $('#cond_sendmoney_platform')[0].value;
+				cond.sender_country = $('#cond_sendmoney_sender_country')[0].value;
+				cond.receiver_country = $('#cond_sendmoney_receiver_country')[0].value;
+				cond.sender_pxp = $('#cond_sendmoney_sender_pxp')[0].value;
+				cond.receiver_pxp = $('#cond_sendmoney_receiver_pxp')[0].value;
+				cond.sender_acc_no = $('#cond_sendmoney_sender_accno')[0].value;
+				cond.receiver_acc_no = $('#cond_sendmoney_receiver_accno')[0].value;
+				cond.min_amount = $('#cond_sendmoney_minamount')[0].value;
+				for(var j=0; j<conditions_array.length; j++){
+					if(conditions_array[j].type == cond.type){
+						flagFound = 1;
+						conditions_array[i] = cond;
+					}
+				}
+				if(flagFound == 0){
+					conditions_array.push(cond);	
+				}
+			}
+		}
+	}
+	console.log(conditions_array);
+	$('#selected_btn'+form_id).append(row);
+}
+
+
+function actn_save(form_id, action, action_type){
+
+	$('#selected_btn'+form_id).remove();
+
+
+	var btn_create = $('<button>').addClass('btn').addClass('btn-success').addClass('btn-block').attr({'data-target':'#masspay_modal', 'data-toggle':'modal', 'data-whatever':'@mdo', 'id':'selected_btn'+form_id});
+	$('#selected_actn_btns').append(btn_create);
+
+	$('#selected_btn'+form_id).append('<p>'+action+'</p>');	
+
+	var row = $('<div>').addClass('row');
+	for(var i=0; i<$('#'+form_id).find("input").length; i++){
+		var col = $('<div>').addClass('col-md-12');
+		var text = '<span>' + $('#'+form_id).find("input")[i].parentNode.childNodes[0].innerHTML + ' ' + $('#'+form_id).find("input")[i].value + '</span>';
+		if($('#'+form_id).find("input")[i].value != ""){
+			col.append(text);
+			row.append(col);
+		}
+		
+	}
+	for(var i=0; i<$('#'+form_id).find("select").length; i++){
+		var col = $('<div>').addClass('col-md-12');
+		var text = '<span>' + $('#'+form_id).find("select")[i].parentNode.childNodes[0].innerHTML + $('#'+form_id).find("select")[i].value + '</span>';
+		if($('#'+form_id).find("select")[i].value != ""){
+			col.append(text);
+			row.append(col);
+		}
+	}
+
+
+	var flagFound = 0;
+	for(var i=0; i<available_actions.length; i++){
+		if(available_actions[i].type == action_type){
+			if(action_type == 'masspay'){
+				var actn = available_actions[i];
+				actn.currency = $('#actn_masspay_currency')[0].value;
+				actn.funder_accno = $('#actn_masspay_funder_accno')[0].value;
+				actn.receiver_accno = $('#actn_masspay_receiver_accno')[0].value;
+				actn.amount = $('#actn_masspay_amount')[0].value;
+				for(var j=0; j<actions_array.length; j++){
+					if(actions_array[j].type == actn.type){
+						flagFound = 1;
+						actions_array[i] = actn;
+					}
+				}
+				if(flagFound == 0){
+					actions_array.push(actn);	
+				}
+			}
+		}
+	}
+	console.log(actions_array);
+
+	$('#selected_btn'+form_id).append(row);
+}
+
+
+function create_blueprint(){
+	/*conditions_array,actions_array;*/
+
+	
+	$.getJSON('../hack_blueprint_2.json', function(data){
+    var str = data.agents[0].params.filter; 
+    data.agents[0].params.filter = str.replace(/-100/i,'-' + $('#cond_sendmoney_minamount')[0].value);
+    var str = data.agents[0].params.filter; 
+    data.agents[0].params.filter = str.replace(/xyz/i, $('#cond_sendmoney_receiver_accno')[0].value);
+    str = data.agents[7].params.body.items[0].amount.value;
+    data.agents[7].params.body.items[0].amount.value = str.replace(/1.00/i, $('#actn_masspay_amount')[0].value + '.00');
+    str = data.agents[7].params.body.items[0].amount.currency;
+    data.agents[7].params.body.items[0].amount.currency = str.replace(/USD/i, $('#actn_masspay_currency')[0].value);
+    /*str = data.agents[5].params.filter;
+    data.agents[5].params.filter = str.replace(/1/i, $('#actn_masspay_')[0].value);*/
+    str = data.agents[3].params.filter;
+    data.agents[3].params.filter = str.replace(/US/i, $('#cond_sendmoney_sender_country')[0].value);
+    console.log(data);
+    data.code = 'Campaign ' + Math.floor((Math.random()*1000));
+    var datum = data;
+    console.log("haha: " + JSON.stringify(available_conditions));
+    console.log("haha: " + JSON.stringify(available_actions));
+    datum.meta = {"conditions":available_conditions[0], "actions":available_actions[0]};
+    console.log(datum);
+    var bc = "hack_bp";
+    var csrf = $('#_csrf').val();
+	$.ajax({
+		url: "/hack_create_blueprint",
+		method: "POST",
+		data: {
+			"_csrf": csrf,
+			"blueprint": datum
+		},
+		dataType: "json"
+	}).done(function(msg){
+		console.log("hello"+msg);
+		window.location = "/hack_show_blueprints";
+		});
+
+	});
+
+/*
+	$.getJSON('../hack_blueprint_2.json', function(data){
+    	var datum = data;
+	    var csrf = $('#_csrf').val();
+		$.ajax({
+			url: "/hack_create_blueprint",
+			method: "POST",
+			data: {
+				"_csrf": csrf,
+				"blueprint": datum
+			},
+			dataType: "json"
+		}).done(function(msg){
+			console.log("hello"+msg);
+			});
+
+	});
+
+*/
+
+
+/*window.location = "/hack_show_blueprints";*/
+
+
+	
+		
+}
+
+
+
+$(function(){
+
+});
+
+</script>
+
+{<body}
+
+	<div class="row topmost">
+	<div class='col-md-2'></div>
+	<div class='col-md-8'></div>
+	<div class='col-md-2'></div>
+	</div>
+
+	<div class="row condition_heading">
+	<div class='col-md-2'></div>
+	<div class='col-md-4'>
+		<span style="text-align:center;"><h3>Conditions</h3</span>
+
+		<div class="row" style="margin-top:40px;">
+		<div class='col-md-3'>
+			<button type="button" id="cond_btn_sendmoney" onclick="show_sendmoney_modal();" class="btn btn-primary condition_btns" data-toggle="modal" data-target="#sendmoney_modal" data-whatever="@mdo">Send Money</button>
+		</div>
+		<div class='col-md-3'>
+			<button type="button" id="cond_btn_payments" onclick="show_payments_modal();" class="btn btn-primary condition_btns">Payments</button>
+		</div>
+		<div class='col-md-3'>
+			<button type="button"  onclick="show_action_modal();" class="btn btn-primary condition_btns">Action</button>
+		</div>
+		<div class='col-md-3'>
+		</div>
+		</div>
+
+		<div class="row" style="margin-top:20px;">
+		<div class='col-md-3'>
+			<button type="button" class="btn btn-primary condition_btns">Send Money</button>
+		</div>
+		<div class='col-md-3'>
+			<button type="button" class="btn btn-primary condition_btns">Payments</button>
+		</div>
+		<div class='col-md-3'>
+			<button type="button" class="btn btn-primary condition_btns">Action</button>
+		</div>
+		<div class='col-md-3'>
+		</div>
+		</div>
+
+	</div>
+	<div class='col-md-4'>
+		<span style="text-align:center;"><h3>Selected Conditions</h3></span>
+		<div class="empty_space1"></div>
+		<div id="selected_cond_btns">
+		</div>
+	</div>
+	<div class='col-md-2'></div>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+	<div class="row topmost">
+	<div class='col-md-2'></div>
+	<div class='col-md-8'></div>
+	<div class='col-md-2'></div>
+	</div>
+
+	<div class="row condition_heading">
+	<div class='col-md-2'></div>
+	<div class='col-md-4'>
+		<span style="text-align:center;"><h3>Actions</h3</span>
+
+		<div class="row" style="margin-top:40px;">
+		<div class='col-md-3'>
+			<button type="button" id="actn_btn_masspay" onclick="show_masspay_modal();" class="btn btn-primary action_btns" data-toggle="modal" data-target="#masspay_modal" data-whatever="@mdo">MassPay</button>
+		</div>
+		<div class='col-md-3'>
+			<button type="button" id="actn_btn_payments" onclick="show_payments_modal();" class="btn btn-primary condition_btns">Payments</button>
+		</div>
+		<div class='col-md-3'>
+			<button type="button"  onclick="show_action_modal();" class="btn btn-primary condition_btns">Action</button>
+		</div>
+		<div class='col-md-3'>
+		</div>
+		</div>
+
+		<div class="row" style="margin-top:20px;">
+		<div class='col-md-3'>
+			<button type="button" class="btn btn-primary condition_btns">Send Money</button>
+		</div>
+		<div class='col-md-3'>
+			<button type="button" class="btn btn-primary condition_btns">Payments</button>
+		</div>
+		<div class='col-md-3'>
+			<button type="button" class="btn btn-primary condition_btns">Action</button>
+		</div>
+		<div class='col-md-3'>
+		</div>
+		</div>
+
+	</div>
+	<div class='col-md-4'>
+		<span style="text-align:center;"><h3>Selected Actions</h3></span>
+		<div class="empty_space1"></div>
+		<div id="selected_actn_btns">
+		</div>
+	</div>
+	<div class='col-md-2'></div>
+	</div>
+
+
+<div class="row">
+	<div class="col-md-12"></div>
+</div>
+
+<div class="row" style="position:relative;margin-top:50px;">
+	<div class="col-md-5"></div>
+	<div class="col-md-2">
+		<button type="button" class="btn btn-success" onclick="create_blueprint();">Create Blueprint</button>
+	</div>
+	<div class="col-md-5"></div>
+</div>
+
+
+
+
+
+
+
+<!--
+
+Adding modals here
+
+-->
+
+
+<div class="modal fade" id="sendmoney_modal" tabindex="-1" role="dialog" aria-labelledby="sendmoney_modal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="sendmoney_modal_heading">Send Money</h4>
+        <div><p class='text-danger obj_1_error obj_error'></p></div>
+      </div>
+      <div class="modal-body">
+        <form id="form_cond_sendmoney_modal">
+        
+          	<div class="form-group">
+            	<label for="cond_sendmoney_currency" class="control-label">Currency:</label>
+            	<input type="text" class="form-control" name="sendmoney_currency" id="cond_sendmoney_currency">
+          	</div>
+          	<div class="form-group">
+	        	<label for="cond_sendmoney_platform" class="control-label">Platform:</label>
+	        	<select class="form-control" name="sendmoney_platform" id="cond_sendmoney_platform">
+	        		<option value="mobile">Mobile</option>
+	        		<option value="web">Web</option>
+	        		<option value="both">Both</option>
+				</select>
+	    	</div>
+
+	    	<label for="cond_sendmoney_label" class="control-label cond_sendmoney_label">Sender Details:</label>
+	    	<div class="row">
+	          	<div class="col-md-4">
+		          	<div class="form-group">
+		            	<label for="cond_sendmoney_sender_country" class="control-label">Sender Country:</label>
+		            	<select class="form-control" name="sendmoney_sender_country" id="cond_sendmoney_sender_country">
+		            		<option value="US">USA</option>
+			        		<option value="France">France</option>
+			        		<option value="Brazil">Brazil</option>
+						</select>
+		        	</div>
+	        	</div>
+	        	<div class="col-md-2"></div>
+	        	<div class="col-md-4">
+		          	<div class="form-group">
+		            	<label for="cond_sendmoney_sender_pxp" class="control-label">Sender PXP Group:</label>
+		            	<input type="text" class="form-control" id="cond_sendmoney_sender_pxp">
+		        	</div>
+	        	</div>
+        	</div>
+        	<div class="form-group">
+            	<label for="cond_sendmoney_sender_accno" class="control-label">Sender Account Number:</label>
+            	<input type="text" class="form-control account_number_input" id="cond_sendmoney_sender_accno">
+          	</div>
+
+          	<label for="cond_sendmoney_label" class="control-label cond_sendmoney_label">Receiver Details:</label>
+	    	<div class="row">
+	          	<div class="col-md-4">
+		          	<div class="form-group">
+		            	<label for="cond_sendmoney_receiver_country" class="control-label">Receiver Country:</label>
+		            	<select class="form-control" id="cond_sendmoney_receiver_country">
+		            		<option value="US">USA</option>
+			        		<option value="France">France</option>
+			        		<option value="Brazil">Brazil</option>
+						</select>
+		        	</div>
+	        	</div>
+	        	<div class="col-md-2"></div>
+	        	<div class="col-md-4">
+		          	<div class="form-group">
+		            	<label for="cond_sendmoney_receiver_pxp" class="control-label">Receiver PXP Group:</label>
+		            	<input type="text" class="form-control" id="cond_sendmoney_receiver_pxp">
+		        	</div>
+	        	</div>
+        	</div>
+        	<div class="form-group">
+            	<label for="cond_sendmoney_receiver_accno" class="control-label">Receiver Account Number:</label>
+            	<input type="text" class="form-control" id="cond_sendmoney_receiver_accno">
+          	</div>
+
+          	<div class="form-group">
+            	<label for="cond_sendmoney_minamount" class="control-label">Min. transaction value:(in cents)</label>
+            	<input type="number" class="form-control" id="cond_sendmoney_minamount" min="0" step="1">
+       		</div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+      	<button type="button" class="btn btn-default reset_btn">Reset</button>
+	    <button type="button" class="btn btn-default close_btn" data-dismiss="modal">Close</button>
+	    <button type="button" id="obj_1" onclick="cond_save('form_cond_sendmoney_modal', 'Send Money', 'sendmoney');" class="btn btn-primary save_btn" data-dismiss="modal">Save Condition</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<!--
+
+action modals here
+
+-->
+
+
+<div class="modal fade" id="masspay_modal" tabindex="-1" role="dialog" aria-labelledby="masspay_modal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="masspay_modal_heading">MassPay</h4>
+        <div><p class='text-danger obj_1_error obj_error'></p></div>
+      </div>
+      <div class="modal-body">
+        <form id="form_actn_masspay_modal">
+          	<div class="form-group">
+            	<label for="actn_masspay_currency" class="control-label">Currency:</label>
+            	<select class="form-control" id="actn_masspay_currency">
+            		<option value="USD">USD</option>
+            		<option value="EUR">Euro</option>
+				</select>
+          	</div>
+          	<div class="form-group">
+	        	<label for="actn_masspay_funder_accno" class="control-label">Funder Account Number:</label>
+	        	<select class="form-control" id="actn_masspay_funder_accno">
+
+				</select>
+	    	</div>
+
+	    	<div class="form-group">
+	        	<label for="actn_masspay_receiver_accno" class="control-label">Receiver Account Number:</label>
+	        	<select class="form-control" id="actn_masspay_receiver_accno">
+	     
+				</select>
+	    	</div>
+          	<div class="form-group">
+            	<label for="actn_masspay_amount" class="control-label">Reward Amount:(in cents)</label>
+            	<input type="number" class="form-control" id="actn_masspay_amount" min="0" step="1">
+       		</div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+      	<button type="button" class="btn btn-default reset_btn">Reset</button>
+	    <button type="button" class="btn btn-default close_btn" data-dismiss="modal">Close</button>
+	    <button type="button" id="obj_1" onclick="actn_save('form_actn_masspay_modal', 'MassPay', 'masspay');" class="btn btn-primary save_btn" data-dismiss="modal">Save Condition</button>
+      </div>
+    </div>
+  </div>
+  <input type = "hidden" id='_csrf' name = "_csrf" value = "{_csrf}" />
+</div>
+
+
+
+
+
+
+
+
+{/body}

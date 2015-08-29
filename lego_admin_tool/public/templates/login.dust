@@ -1,0 +1,27 @@
+{>"layouts/master" /}
+
+{<body}
+
+<div class="pure-g">
+    <div class="pure-u-1-4"></div>
+    <div class="pure-u-1-2">
+    <form class="pure-form pure-form-stacked" action="/" method="post">
+    <fieldset>
+        <legend>Login</legend>
+
+        <input type="text" name="username" id="username" placeholder="Username">
+		<input type="password" name="password" id="password" placeholder="Password">
+		<input type = "hidden" name = "_csrf" value = "{_csrf}" />
+
+        <label for="remember">
+            <input id="remember" type="checkbox"> Remember me
+        </label>
+
+        <button type="submit" class="pure-button pure-button-primary" value="submit">Log in</button>
+    </fieldset>
+</form>
+    </div>
+    <div class="pure-u-1-4"></div>
+</div>
+
+{/body}

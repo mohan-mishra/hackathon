@@ -1,0 +1,99 @@
+{>"layouts/master" /}
+<script type="text/javascript" src="../js/thickbox.js"></script>
+<link rel="stylesheet" href="../css/thickbox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="../js/create_psb.js"></script>  <!--include validations, getJSON and ajax calls-->
+{<body}
+<div class="pure-g">
+    <div class="pure-u-1-4"></div>
+    <div class="pure-u-1-2">
+        <form class="pure-form pure-form-aligned" action="/PSB/create" method="POST">
+    <fieldset>
+        <div class="pure-control-group">
+            <label for="campaign_name">Campaign Name</label>
+            <input id="psb_campaign_name" name="psb_campaign_name" type="text" class="pure-u-1-2" required>
+        </div>
+          
+        <div class="pure-control-group">
+            <label for="campaign_details">Campaign Details</label>
+            <textarea id="psb_campaign_details" name="psb_campaign_details" rows="4" cols="50" maxlength="200" placeholder="Enter Campaign details here (200 characters)" required></textarea>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="campaign_start_date">Campaign Start Date</label>
+            <input id="psb_start_date" name="psb_start_date" type="text" placeholder="YYYY-MM-DD" class="datepicker pure-u-1-6" required><i class="fa fa-calendar" style="margin-left:10px;"></i>
+            <input type="number" name="psb_start_hour" id="psb_start_hour"  min="0" max="12" value="0" style="margin-left:10px;" class="pure-u-1-12" required>
+            <select name="start_meridian"  class="pure-u-1-12" style="margin-left:10px;">
+                <option value="am">AM</option>
+                <option value="pm">PM</option>
+            </select> 
+        </div>
+
+        <div class="pure-control-group">
+            <label for="campaign_end_date">Campaign End Date</label>
+            <input id="psb_end_date" name="psb_end_date" type="text" placeholder="YYYY-MM-DD" class="datepicker pure-u-1-6" required><i class="fa fa-calendar" style="margin-left:10px;"></i>
+            <input type="number" name="psb_end_hour" id="psb_end_hour"  min="0" max="12" value="0" style="margin-left:10px;" class="pure-u-1-12" required>
+            <select name="end_meridian" class="pure-u-1-12" style="margin-left:10px;">
+                <option value="am">AM</option>
+                <option value="pm">PM</option>
+            </select> 
+        </div>
+
+        <div class="pure-control-group">
+            <label for="discount_currency_and_value">Discount Currency and Value</label>
+            <select name="psb_discount_currency" id="psb_discount_currency" class="pure-u-1-6"></select>
+            <input type="text" id="psb_discount_value" name="psb_discount_value" class="pure-u-1-4" placeholder="Enter Amount" style="margin-left:10px;" required> <label for="psb_discount_value_error" id="psb_discount_value_error"></label>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="min_purchase_amount">Minimum Purchase Amount</label>
+            <input id="psb_min_purchase_amount" name="psb_min_purchase_amount" type="text" class="pure-u-1-6">
+            <label for="psb_min_purchase_amount_error" id="psb_min_purchase_amount_error"></label>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="budget">Budget</label>
+            <input id="psb_budget" name="psb_budget" type="text" class="pure-u-1-6" required>
+            <label for="psb_budget_error" id="psb_budget_error"></label>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="funding_account_number">Funding Account Number</label>
+            <input id="psb_funding_account_number" name="psb_funding_account_number" type="text" class="pure-u-1-6" required>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="funding_type">Funding Type</label>
+            <select name="psb_funding_type" class="pure-u-1-4">
+                <option value="PRE_FUNDED">PRE_FUNDED</option>
+                <option value="POST_FUNDED">POST_FUNDED</option>
+            </select> 
+        </div>
+
+        <div class="pure-control-group">
+            <label for="country">Country</label>
+            <select name="psb_country_value" id="psb_country_value" class="pure-u-1-4"></select>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="locale_code">Locale Code</label>
+            <select name="psb_locale_code" id="psb_locale_code" class="pure-u-1-4"></select>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="tandc">Terms & Conditions</label>
+            <textarea id="psb_tandc" name="psb_tandc" rows="4" cols="50" maxlength="200" placeholder="Enter Terms & Conditions here (200 characters)"></textarea>
+        </div>
+
+        <div class="pure-controls">
+            <input type = "hidden" name = "_csrf" value = "{_csrf}" />
+            <button type="submit" class="pure-button pure-button-primary">Submit</button>
+            <a href="http://www.google.com?keepThis=true&TB_iframe=true&height=250&width=400" title="add a caption to title attribute / or leave blank" class="thickbox">Example 1</a>  
+        </div>
+    </fieldset>
+</form>
+    </div>
+    <div class="pure-u-1-4"></div>
+</div>
+
+
+{/body}

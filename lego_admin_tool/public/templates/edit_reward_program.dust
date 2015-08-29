@@ -1,0 +1,92 @@
+{>"layouts/master" /}
+
+<!--<script type="text/javascript" src="../js/edit_reward_punchcard.js"></script>  <!--include validations, getJSON and ajax calls-->
+<script>
+	$(function(){
+		var crapvar;
+		/*
+		$('.edit').click(function(){
+			$.ajax({
+				url: '/get_reward_details',
+				method: "GET",
+				data: {
+					program_code: this.value
+				}
+			}).done(function(msg){
+				var var_program_code = msg.program_code;
+				$( '<label>Program Code</label><input type="text" value="' + msg.program_code + '" readonly><a>Update</a><br>').appendTo( "#crap" );
+				$( '<label>Program Name</label><input type="text" value="' + msg.locales[0].program_name +'" ><br>').appendTo( "#crap" );
+				$( '<label>Program Start Time</label><input type="text" value="' + msg.program_start_time +'" ><br>').appendTo( "#crap" );
+				$( '<label>Program End Time</label><input type="text" value="' + msg.program_end_time +'" ><br>').appendTo( "#crap" );
+				$( '<label>Lifecycle Status</label><input type="text" value="' + msg.lifecycle_status +'" ><br>').appendTo( "#crap" );
+				$( '<label>Locale Name</label><input type="text" value="' + msg.locales[0].locale_name +'" ><br>').appendTo( "#crap" );
+				$( '<label>Program Description</label><input type="text" value="' + msg.locales[0].program_description +'" ><br>').appendTo( "#crap" );
+				
+			});
+		});
+*/
+
+		$(".pure-button").click(function(){
+            console.log($(this));
+			$('.pure-button').removeClass('pure-button-active');
+			$(this).addClass('pure-button-active');	
+		});
+	});
+</script>
+
+
+{<body}
+<input id="program_name" name="program_id" type="text">
+<select name="program_type" id="program_type">
+	<option value="DG_NUMBER_BASED_PUNCHCARD">Punchcard<option>
+</select>
+<select name="country" id="country"></select>
+<input id="start_date" name="start_date" type="text" placeholder="YYYY-MM-DD" class="datepicker" required><i class="fa fa-calendar" style="margin-left:10px;"></i>
+<input id="end_date" name="end_date" type="text" placeholder="YYYY-MM-DD" class="datepicker pure-u-1-6" required><i class="fa fa-calendar" style="margin-left:10px;"></i>
+<div class="pure-g">
+
+<ul class="pure-paginator">
+    <li><a class="pure-button prev" href="#">&#171;</a></li>
+    <li><a class="pure-button" href="#">1</a></li>
+    <li><a class="pure-button " href="#">2</a></li>
+    <li><a class="pure-button" href="#">3</a></li>
+    <li><a class="pure-button" href="#">4</a></li>
+    <li><a class="pure-button" href="#">5</a></li>
+    <li><a class="pure-button next" href="#">&#187;</a></li>
+</ul>
+<br>
+    <div class="pure-u-20-24">
+    <form method="GET" action="/get_reward_details">
+    <table class="pure-table pure-table-bordered">
+    <thead>
+    	<tr>
+        <th>S.No.</th>
+    	<th>Program name</th>
+    	<th>Program Code</th>
+    	<th>Start Date</th>
+    	<th>End Date</th>
+    	<th>Edit</th>
+    	</tr>
+    	</thead>
+    	<tbody>
+    	{#mydata.reward_programs}
+    	<tr>
+        <td>{@idx}{$idx}{/idx}</td>
+    	{#locales}
+    	<td>{program_name}</td>
+    	{/locales}
+    	<td>{program_code}</td>
+    	<td>{program_start_time}</td>
+    	<td>{program_end_time}</td>
+    	<td><button class="edit" value={program_code} name="program_code" id="program_code" type="submit">Edit</button></td>
+    	</tr>
+    	{/mydata.reward_programs}
+    	</tbody>
+</table>
+
+
+    </div>
+    <div class="pure-u-4-24" id="crap"></div>
+</div>
+
+{/body}

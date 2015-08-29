@@ -1,0 +1,75 @@
+{>"layouts/master" /}
+<script type="text/javascript" src="../js/create_punchcard.js"></script>  <!--include validations, getJSON and ajax calls-->
+{<body}
+<div class="pure-g">
+    <div class="pure-u-1-5"></div>
+    <div class="pure-u-3-5">
+        <form class="pure-form pure-form-aligned" action="/PSB/create" method="GET">
+    <fieldset>
+        <div class="pure-control-group">
+            <label for="campaign_name">Campaign Name</label>
+            <input id="reward_campaign_name" name="reward_campaign_name" type="text" class="pure-u-1-2" required>
+        </div>
+          
+        <div class="pure-control-group">
+            <label for="campaign_details">Campaign Details</label>
+            <textarea id="reward_campaign_details" name="reward_campaign_details" rows="4" cols="50" maxlength="200" placeholder="Enter Reward program details here (200 characters)" required></textarea>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="country">Country</label>
+            <select name="reward_country" id="reward_country" class="pure-u-1-4"></select>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="campaign_start_date">Campaign Start Date</label>
+            <input id="reward_start_date" name="reward_start_date" type="text" placeholder="YYYY-MM-DD" class="datepicker pure-u-1-6" required><i class="fa fa-calendar" style="margin-left:10px;"></i> 
+        </div>
+
+        <div class="pure-control-group">
+            <label for="campaign_end_date">Campaign End Date</label>
+            <input id="reward_end_date" name="reward_end_date" type="text" placeholder="YYYY-MM-DD" class="datepicker pure-u-1-6" required><i class="fa fa-calendar" style="margin-left:10px;"></i>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="campaign_type">Campaign Type</label>
+            <select name="reward_type" id="reward_type" class="pure-u-1-4">
+                <option value="frequency_based">Frequency based</option>
+                <option value="amount_based">Amount based</option>
+            </select> 
+        </div>
+
+        <div id="_frequency_based">
+        <div class="pure-control-group">
+            <label for="fb_min_spent">Minimum spent per visit</label>
+            <input id="reward_fb_min_spent" name="reward_fb_min_spent" type="text" required>
+        </div>
+        <div class="pure-control-group">
+            <label for="min_visit_count">Minimum visits for reward</label>
+            <input id="reward_fb_min_visit_count" name="reward_fb_min_visit_count" type="text" required>
+        </div>
+        </div>
+        
+        <div id="_amount_based" style="display:none;">
+        <div class="pure-control-group">
+            <label for="ab_min_spent">Minimum spent per visit</label>
+            <input id="reward_ab_min_spent" name="reward_ab_min_spent" type="text">
+        </div>
+        <div class="pure-control-group">
+            <label for="total_amount_spent">Total amount spent for reward</label>
+            <input id="reward_fb_total_amount_spent" name="reward_fb_total_amount_spent" type="text">  <!--make this field required-->
+        </div>
+        </div>
+
+        <div class="pure-controls">
+            <input type = "hidden" name = "_csrf" value = "{_csrf}" />
+            <button type="submit" class="pure-button pure-button-primary">Submit</button> 
+        </div>
+    </fieldset>
+</form>
+    </div>
+    <div class="pure-u-1-5"></div>
+</div>
+
+
+{/body}

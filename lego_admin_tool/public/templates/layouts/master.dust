@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+  	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+	<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+  <script src="../../js/jquery-validation-1.13.1/dist/jquery.validate.js"></script>
+  <script>
+    $(function(){
+      $('#master_edit_psb').click(function(){
+        var pid = prompt("Enter Offer Program ID");
+        $("#master_edit_psb").attr("href", "/PSB/edit?offer_program_id=" + pid);
+      });
+    });
+  </script>
+	
+
+<script>
+$(function() {
+       $('.datepicker').datepicker({
+       	dateFormat: 'yy-mm-dd'
+       });
+
+       $( document ).tooltip();
+});
+
+$(function() {
+    $( ".dialog" ).dialog();
+  });
+</script>
+
+
+    <title>Lego-Admin Tool</title>
+</head>
+<!--<body bgcolor="#E6E6E6">
+<a href="/create_reward" class="pure-menu-link">Create Reward</a>&nbsp | &nbsp
+<a href="/edit_reward" class="pure-menu-link">Edit Reward</a>&nbsp | &nbsp
+<a href="/PSB/create" class="pure-menu-link">Create PSB</a>&nbsp | &nbsp
+<a href="/PSB/edit" id="master_edit_psb" class="pure-menu-link">Edit PSB</a>&nbsp | &nbsp
+<a href="/create_blueprint" class="pure-menu-link">Create Blueprint</a>&nbsp | &nbsp
+<a href="/execute_blueprint" class="pure-menu-link">Execute Blueprint</a>&nbsp | &nbsp
+<a href="/select_blueprint" class="pure-menu-link">Select Blueprint</a>&nbsp | &nbsp <br>
+    </ul>
+</div>-->
+
+
+
+<div id='_master' class="pure-menu pure-menu-horizontal">
+<a href="/create_reward" class="pure-menu-heading pure-menu-link">Create Reward</a>
+<a href="/edit_reward" class="pure-menu-heading pure-menu-link">Edit Reward</a>
+<a href="/PSB/create" class="pure-menu-heading pure-menu-link">Create PSB</a>
+<a href="/PSB/edit" class="pure-menu-heading pure-menu-link">Edit PSB</a>
+<a href="/create_blueprint" class="pure-menu-heading pure-menu-link">Create Blueprint</a>
+<a href="/select_blueprint" class="pure-menu-heading pure-menu-link">Select Blueprint</a>
+<hr>
+</div>
+
+
+
+    {+body /}
+</body>
+</html>

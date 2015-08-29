@@ -1,0 +1,144 @@
+ {
+            
+            "offer_program_code": "",
+            "offer_type": "PSB",
+            "currency_code": "",
+            
+            "maximum_issuable_amount": "",
+            
+            "funder_account_number": "",
+            "funding_type": "",
+            "is_transferable": false,
+            "is_targeted": false,
+
+            "redemption_end_time": "",
+            "lifecycle_status": "ENABLED",
+            "localized_attributes": [
+                {
+                    "locale_code": "",
+                    "title": "CS_test",
+                    "sub_title": "CS_test",
+                    "description": ""
+                }
+            ],
+            "stackable_code": "ALL",
+            "is_refundable": false,
+            
+            "applicable_level": "CART",
+            "discount_level": "ITEM_TOTAL",
+            "applicability_rule": {
+                "cart_rule": {
+                    "redemption_channels": "ALL"
+                },
+                "user_rule": {
+                    "user_countries": [
+                        ""
+                    ]
+                }
+            },
+            "computation_rules": [
+                {
+                    "offer_value": {
+                        "type": "FIXED",
+                        "value": "",
+                        "max_discount": "" 
+                    },
+                    "cart_rule": {
+                        "min_cart_amount": 0
+                    }
+                }
+            ],
+            "custom_data": [
+                {
+                    "name": "IS_REWARD",
+                    "value": "false"
+                },
+                {
+                    "name": "MEMO",
+                    "value": "admin pie tool - create psb campaign"
+                },
+                {
+                    "name": "REDEEMABLE_SITE",
+                    "value": "PAYPAL"
+                },
+                {
+                    "name": "SHARING",
+                    "value": "false"
+                }
+            ],
+           
+            "tethering_type_code": "TETHERED"
+            
+        }
+
+
+   "offer_program_code": "TESTMSB004",  Yes     
+            "offer_type": "PSB",    Yes Implicit    
+            "currency_code": "USD", Yes User Input  
+            "maximum_issuable_amount": 200000,  Yes User Input  
+            "funder_account_number": "H8TPN23SAT6ML",   Yes User Input  
+            "funding_type": "PRE_FUNDED",   Yes User Input  
+            "is_transferable": false,       Default 
+            "is_targeted": false,       Default 
+            
+            "redemption_end_time": "2016-11-30 09:00:00",   Yes User Input  
+            "lifecycle_status": "ENABLED",      Default 
+            "localized_attributes": [           
+                {           
+                    "locale_code": "en_US",     User Input  
+                    "title": "CS_test",     User Input  
+                    "sub_title": "CS_test",         Not required
+                    "description": "Testing"        User Input  
+                }           
+            ],          
+            "stackable_code": "ALL",        Default 
+            "is_refundable": false,     TRUE    TRUE
+            
+            "applicable_level": "CART",     Default 
+            "discount_level": "ITEM_TOTAL",         
+            "applicability_rule": {         
+                "cart_rule": {          
+                    "redemption_channels": "ALL"            
+                },          
+                "user_rule": {          
+                    "user_countries": [         
+                        "US"            
+                    ]           
+                }           
+            },          
+            "computation_rules": [          
+                {           
+                    "offer_value": {            
+                        "type": "FIXED",            
+                        "value": 1000,          
+                        "max_discount": 1000            
+                    },          
+                    "cart_rule": {          
+                        "min_cart_amount": 0            
+                    }           
+                }           
+            ],          
+            "custom_data": [            
+                {           
+                    "name": "IS_REWARD",            
+                    "value": "false"            
+                },          
+                {           
+                    "name": "MEMO",         
+                    "value": "admin pie tool - create psb campaign"     
+                },          
+                {           
+                    "name": "REDEEMABLE_SITE",          
+                    "value": "PAYPAL"           
+                },          
+                {           
+                    "name": "SHARING",          
+                    "value": "false"            
+                }           
+            ],          
+            
+            "tethering_type_code": "TETHERED"       Default 
+            
+        }           
+            
+

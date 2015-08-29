@@ -1,0 +1,60 @@
+#accordion .ui-accordion-content { 
+	padding: 0px; 
+    width: 100%;  
+    background-color: #f3f3f3;  
+    color: #777;  
+    font-size: 10pt;  
+    line-height: 16pt;  
+}
+
+#accordion .ui-accordion-header a {  
+    color: #000;   
+    display: block;  
+    font-size: 12pt;  
+    width: 100%;  
+    text-indent: 10px;  
+}
+
+.agent_div {
+  background: -webkit-linear-gradient(#81DAF5, #58ACFA); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#81DAF5, #58ACFA); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#81DAF5, #58ACFA); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#81DAF5, #58ACFA); /* Standard syntax */
+  /*margin-right: 20px;*/
+  border: 1px solid;
+  border-radius: 5px;
+  cursor: move;
+  padding:1px;
+}
+
+.agent {
+
+    border: 1px solid;
+    cursor: pointer;
+    position: absolute;
+}
+
+.agent_name_div {
+    display: inline;
+}
+
+.agent_name_link {
+    color: white;
+}
+
+.agent_name_left_div {
+    display: inline;
+    margin-left: 20px;
+}
+
+.agent_name_right_div {
+    display: inline;
+}
+
+#playarea{
+    width:1500px;
+    height:700px;
+    border: 1px solid;
+    border-radius: 5px;
+    position: relative;
+}

@@ -1,0 +1,1023 @@
+{>"layouts/master_2" /}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="../css/punchcard.css">
+<link rel="stylesheet" href="../components/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="../components/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
+<!--
+<link rel="stylesheet" href="../components/bootstrap-material-design-master/dist/css/material-fullpalette.css">
+<script src="../components/bootstrap-material-design-master/dist/js/material.js"></script>
+-->
+
+<script>
+
+
+var obj_1 = {
+	"campaign_name": "",
+	"campaign_details": "",
+	"country": "",
+	"locale_code": "",
+	"start_date": "",
+	"end_date": ""
+};
+
+var obj_2 = {
+	"reward_type": "",
+	"frequency_based": {
+		"fb_min_spent_pv": "",
+		"fb_no_of_visits": "",
+		"fb_min_visits_for_reward": "",
+		"fb_max_reward_count": ""
+	},
+	"amount_based": {
+		"ab_min_spent_pv": "",
+		"ab_amt_spent": "",
+		"ab_min_visits_for_reward": "",
+		"ab_max_reward_count": ""
+	}
+};
+
+var obj_3 = {
+	"payout_type": "",
+	"paypal_sb": {
+		"psb_start_date": "",
+		"psb_end_date": "",
+		"psb_discount_currency": "",
+		"psb_min_purchase_amt": ""
+	},
+	"merchant_sb": {
+		"msb_start_date": "",
+		"msb_end_date": "",
+		"msb_discount_currency": "",
+		"msb_min_purchase_amt": ""
+	}
+};
+
+var obj_4 = {
+	"budget": "",
+	"funding_type": "",
+	"funding_accno": ""
+};
+
+var flag_reward_type_selected = false;
+var reward_type;
+var flag_payout_type_selected = false;
+var payout_type;
+
+function show_reward_type(reward_type){
+	$( "#select_reward_type" ).hide(1000);
+	if(reward_type == "frequency_based"){
+		$("#btn_reward_type")[0].innerText = "Frequency Based";
+	}
+	else{
+		$("#btn_reward_type")[0].innerText = "Amount Based";
+	}
+	$("." + reward_type).show(1000);
+	$("#reward_selected").addClass('display_inline');
+	$("#reward_selected").show(1000);
+	$("#reward_selected").addClass('display_inline');
+}
+
+function hide_reward_type(reward_type){
+	if(reward_type == "frequency_based"){
+		$("#btn_reward_type")[0].innerText = "Frequency Based";
+	}
+	else{
+		$("#btn_reward_type")[0].innerText = "Amount Based";
+	}
+	$(".frequency_based").hide();
+	$(".amount_based").hide();
+	$(".obj_2_error").empty();
+	$("." + reward_type).show(500);
+}
+
+function show_payout_type(payout_type){
+	$( "#select_payout_type" ).hide(1000);
+	if(payout_type == "paypal_sb"){
+		$("#btn_payout_type")[0].innerText = "PSB";
+	}
+	else{
+		$("#btn_payout_type")[0].innerText = "MSB";
+	}
+	$("." + payout_type).show(1000);
+	$("#payout_selected").addClass('display_inline');
+	$("#payout_selected").show(1000);
+	$("#payout_selected").addClass('display_inline');
+}
+
+function hide_payout_type(payout_type){
+	if(payout_type == "paypal_sb"){
+		$("#btn_payout_type")[0].innerText = "PSB";
+	}
+	else{
+		$("#btn_payout_type")[0].innerText = "MSB";
+	}
+	$(".paypal_sb").hide();
+	$(".merchant_sb").hide();
+	$(".obj_3_error").empty();
+	$("." + payout_type).show(500);
+}
+
+function validate_obj_1(obj){
+	var obj_1_error = '';
+	var count = 0;
+	if(obj.campaign_name == ""){
+		count++;
+		obj_1_error += '*please enter Campaign Name<br>';
+	}
+	if(obj.campaign_details == ""){
+		count++;
+		obj_1_error += '*please enter Campaign Details<br>';
+	}
+	if(obj.country == ""){
+		count++;
+	}
+	if(obj.locale_code == ""){
+		count++;
+
+	}
+	if(obj.start_date == ""){
+		count++;
+		obj_1_error += '*please enter Start Date<br>';
+	}
+	if(obj.end_date == ""){
+		count++;
+		obj_1_error += '*please enter End Date<br>';
+	}
+	if(count > 0){
+		$('.obj_1_builder').removeClass('btn-primary');
+		$('.obj_1_builder').addClass('btn-danger');
+		$('.obj_1_builder .badge').show();
+		$('.obj_1_builder').find($('.badge'))[0].innerText = "";
+		$('.obj_1_builder').find($('.badge')).append(count);
+	}
+	if(count == 0){
+		$('.obj_1_builder').removeClass('btn-danger');
+		$('.obj_1_builder').removeClass('btn-primary');
+		$('.obj_1_builder').addClass('btn-success');
+		$('.obj_1_builder .badge').hide();
+	}
+	$('.obj_1_error').empty();
+	$('.obj_1_error').append(obj_1_error);
+}
+
+function validate_obj_2(obj){
+	console.log(JSON.stringify(obj));
+	if(obj.reward_type == 'frequency_based'){
+		console.log('in fb');
+		var obj_2_error = '';
+		var count = 0;
+		if(obj.frequency_based.fb_min_spent_pv == "" || obj.frequency_based.fb_no_of_visits == ""){
+			count++;
+		}
+	}
+	if(obj.reward_type == 'amount_based'){
+		console.log('in ab');
+		var obj_2_error = '';
+		var count = 0;
+		if(obj.amount_based.ab_min_spent_pv == "" || obj.amount_based.ab_amt_spent == "" || obj.amount_based.ab_max_reward_count == ""){
+			count++;
+			console.log('in if ' + count);
+		}
+	}
+	if(count > 0){
+		obj_2_error = '*all fields are compulsory';
+	}
+	if(count > 0){
+		$('.obj_2_builder').removeClass('btn-primary');
+		$('.obj_2_builder').addClass('btn-danger');
+		$('.obj_2_builder .badge').show();
+		$('.obj_2_builder').find($('.badge'))[0].innerText = "";
+		$('.obj_2_builder').find($('.badge')).append(count);
+	}
+	if(count == 0){
+		$('.obj_2_builder').removeClass('btn-danger');
+		$('.obj_2_builder').removeClass('btn-primary');
+		$('.obj_2_builder').addClass('btn-success');
+		$('.obj_2_builder .badge').hide();
+	}
+	$('.obj_2_error').empty();
+	$('.obj_2_error').append(obj_2_error);
+}
+
+function validate_obj_3(obj){
+	console.log(JSON.stringify(obj));
+	if(obj.payout_type == 'paypal_sb'){
+		console.log('in fb');
+		var obj_3_error = '';
+		var count = 0;
+		if(obj.paypal_sb.psb_start_date == "" || obj.paypal_sb.psb_end_date == "" || obj.paypal_sb.psb_discount_currency == "" || obj.paypal_sb.psb_min_purchase_amt == ""){
+			count++;
+		}
+	}
+	if(obj.payout_type == 'merchant_sb'){
+		console.log('in ab');
+		var obj_3_error = '';
+		var count = 0;
+		if(obj.merchant_sb.msb_start_date == "" || obj.merchant_sb.msb_end_date == "" || obj.merchant_sb.msb_discount_currency == "" || obj.merchant_sb.msb_min_purchase_amt == ""){
+			count++;
+			console.log('in if ' + count);
+		}
+	}
+	if(count > 0){
+		obj_3_error = '*all fields are compulsory';
+	}
+	if(count > 0){
+		$('.obj_3_builder').removeClass('btn-primary');
+		$('.obj_3_builder').addClass('btn-danger');
+		$('.obj_3_builder .badge').show();
+		$('.obj_3_builder').find($('.badge'))[0].innerText = "";
+		$('.obj_3_builder').find($('.badge')).append(count);
+	}
+	if(count == 0){
+		$('.obj_3_builder').removeClass('btn-danger');
+		$('.obj_3_builder').removeClass('btn-primary');
+		$('.obj_3_builder').addClass('btn-success');
+		$('.obj_3_builder .badge').hide();
+	}
+	$('.obj_3_error').empty();
+	$('.obj_3_error').append(obj_3_error);
+}
+
+function validate_obj_4(obj){
+	var obj_4_error = '';
+	var count = 0;
+	if(obj.budget == ""){
+		count++;
+		obj_4_error += '*please enter Budget value<br>';
+	}
+	if(obj.funding_type == ""){
+		count++;
+		obj_4_error += '*please enter Funding Type<br>';
+	}
+	if(obj.funding_accno == ""){
+		count++;
+		obj_4_error += '*please enter Funding Account Number<br>';
+	}
+	if(count > 0){
+		$('.obj_4_builder').removeClass('btn-primary');
+		$('.obj_4_builder').addClass('btn-danger');
+		$('.obj_4_builder .badge').show();
+		$('.obj_4_builder').find($('.badge'))[0].innerText = "";
+		$('.obj_4_builder').find($('.badge')).append(count);
+	}
+	if(count == 0){
+		$('.obj_4_builder').removeClass('btn-danger');
+		$('.obj_4_builder').removeClass('btn-primary');
+		$('.obj_4_builder').addClass('btn-success');
+		$('.obj_4_builder .badge').hide();
+	}
+	$('.obj_4_error').empty();
+	$('.obj_4_error').append(obj_4_error);
+}
+
+$(function(){
+	/*$.material.init();*/
+	$.getJSON('../countries_currency.json', function(data){
+        jsondata = data;
+        var html = '';
+        var html3 = '';
+        var len = data.countries.length;
+        var html1 = '';
+        for (var i = 0; i< len; i++) {
+            html1 += '<option value="' + data.countries[i].country_name + '">' + data.countries[i].country_name + '</option>';
+        }
+        $('#country').append(html1);
+
+        var html_default_language = '';
+        var temp_len = data.countries[0].language.length;
+        for(var i=0; i<temp_len; i++)
+        {
+            html_default_language += '<option value="' + jsondata.countries[0].language[i] + '">' + jsondata.countries[0].language[i] + '</option>';
+        }
+        $('#locale_code').append(html_default_language);
+/*
+        for(var i = 0; i< len; i++){
+        	html3 += '<option value="' + jsondata.countries[i].currency_code + '">' + jsondata.countries[i].currency_code + '</option>';
+        }
+        $('#payout_discount_currency').append(html3);*/
+    });
+
+    $('#country').change(function(){
+        $('#locale_code').empty();
+        var html2 = '';
+        var len = jsondata.countries.length;
+        var index;
+        console.log($("#country option:selected").text());
+        for(var i = 0; i< len; i++)
+        {
+            if(jsondata.countries[i].country_name == $("#country option:selected").text())
+            {
+                index = i;
+                break;
+            }
+        }
+        var len1 = jsondata.countries[index].language.length;
+        for (var i = 0; i< len1; i++) {
+            html2 += '<option value="' + jsondata.countries[index].language[i] + '">' + jsondata.countries[index].language[i] + '</option>';
+        }
+        $('#locale_code').append(html2);
+    });
+
+    $( ".button_reward_type" ).click(function() {
+		/*show the modal*/
+		flag_reward_type_selected = true;
+		reward_type = $(this)[0].id;
+		if($(this)[0].id == "frequency_based"){
+			show_reward_type("frequency_based");
+			console.log(JSON.stringify(obj_2));
+		}
+		else{
+			show_reward_type("amount_based");
+			console.log(JSON.stringify(obj_2));
+		}
+	});
+
+	$( ".button_payout_type" ).click(function() {
+		/*show the modal*/
+		flag_payout_type_selected = true;
+		payout_type = $(this)[0].id;
+		if($(this)[0].id == "paypal_sb"){
+			show_payout_type("paypal_sb");
+			console.log(JSON.stringify(obj_3));
+		}
+		else{
+			show_payout_type("merchant_sb");
+			console.log(JSON.stringify(obj_3));
+		}
+	});
+
+    $( "#obj_1" ).click(function() {
+    	obj_1.campaign_name = $('#campaign-name').val();
+    	obj_1.campaign_details = $('#campaign-details').val();
+    	obj_1.country = $('#country').val();
+    	obj_1.locale_code = $('#locale_code').val();
+    	obj_1.start_date = $('#start_date').val();
+    	obj_1.end_date = $('#end_date').val();
+
+    	validate_obj_1(obj_1);
+
+    	$("label[for='fin_campaign_name']").text(obj_1.campaign_name);
+    	$("label[for='fin_campaign_details']").text(obj_1.campaign_details);
+    	$("label[for='fin_country']").text(obj_1.country);
+    	$("label[for='fin_locale_code']").text(obj_1.locale_code);
+    	$("label[for='fin_start_date']").text(obj_1.start_date);
+    	$("label[for='fin_end_date']").text(obj_1.end_date);
+
+    	$(".obj_1_details").show(500);
+    });
+
+	$( "#obj_2" ).click(function() {
+    	obj_2.reward_type = reward_type;
+    	console.log(obj_2.reward_type);
+    	if(reward_type == 'frequency_based'){
+    		obj_2.frequency_based.fb_min_spent_pv = $('#fb_min_spent_pv').val();
+    		obj_2.frequency_based.fb_no_of_visits = $('#fb_no_of_visits').val();
+    		obj_2.frequency_based.fb_min_visits_for_reward = $('#fb_min_visits_for_reward').val();
+    		if($('#fb_max_reward_count').val() == ""){
+    			obj_2.frequency_based.fb_max_reward_count = "Infinite";
+    		}
+    		else{
+    			obj_2.frequency_based.fb_max_reward_count = $('#fb_max_reward_count').val();
+    		}
+    	}
+    	else{
+    		obj_2.amount_based.ab_min_spent_pv = $('#ab_min_spent_pv').val() + '$';
+    		obj_2.amount_based.ab_amt_spent = $('#ab_amt_spent').val();
+    		obj_2.amount_based.ab_min_visits_for_reward = $('#ab_min_visits_for_reward').val();
+    		obj_2.amount_based.ab_max_reward_count = $('#ab_max_reward_count').val();
+    		console.log(JSON.stringify(obj_2));
+    	}
+
+    	validate_obj_2(obj_2);
+
+    	if(obj_2.reward_type == 'frequency_based'){
+    		$("label[for='fin_reward_type']").text('Frequency Based');
+    	}
+
+    	$("label[for='fin_fb_min_spent_pv']").text(obj_2.frequency_based.fb_min_spent_pv + '$');
+    	$("label[for='fin_fb_no_of_visits']").text(obj_2.frequency_based.fb_no_of_visits + '$');
+    	$("label[for='fin_fb_min_visits_for_reward']").text(obj_2.frequency_based.fb_min_visits_for_reward);
+    	$("label[for='fin_fb_max_reward_count']").text(obj_2.frequency_based.fb_max_reward_count);
+
+    	$("label[for='fin_ab_min_spent_pv']").text(obj_2.amount_based.ab_min_spent_pv + '$');
+    	$("label[for='fin_ab_amt_spent']").text(obj_2.amount_based.ab_amt_spent + '$');
+    	$("label[for='fin_ab_min_visits_for_reward']").text(obj_2.amount_based.ab_min_visits_for_reward);
+    	$("label[for='fin_ab_max_reward_count']").text(obj_2.amount_based.ab_max_reward_count);
+
+    	$(".obj_2_details").show(500);
+    	$('#fin_fb').hide();
+    	$('#fin_ab').hide();
+    	if(obj_2.reward_type == 'frequency_based'){
+    		$('#fin_fb').show();
+    	}
+    	else{
+    		$('#fin_ab').show();
+    	}
+    });
+
+    $( "#obj_3" ).click(function() {
+    	obj_3.payout_type = payout_type;
+    	console.log(obj_3.payout_type);
+    	if(payout_type == 'paypal_sb'){
+    		obj_3.paypal_sb.psb_start_date = $('#psb_start_date').val();
+    		obj_3.paypal_sb.psb_end_date = $('#psb_end_date').val();
+    		obj_3.paypal_sb.psb_discount_currency = $('#psb_discount_currency').val();
+    		obj_3.paypal_sb.psb_min_purchase_amt = $('#psb_min_purchase_amt').val();
+    	}
+    	else{
+    		obj_3.merchant_sb.msb_start_date = $('#msb_start_date').val();
+    		obj_3.merchant_sb.msb_end_date = $('#msb_end_date').val();
+    		obj_3.merchant_sb.msb_discount_currency = $('#msb_discount_currency').val();
+    		obj_3.merchant_sb.msb_min_purchase_amt = $('#msb_min_purchase_amt').val();
+    		console.log(JSON.stringify(obj_3));
+    	}
+
+    	validate_obj_3(obj_3);
+
+    	if(obj_3.payout_type == 'paypal_sb'){
+    		$("label[for='fin_payout_type']").text('PSB');
+    	}
+    	else{
+    		$("label[for='fin_payout_type']").text('MSB');
+    	}
+
+    	$("label[for='fin_psb_start_date']").text(obj_3.paypal_sb.psb_start_date);
+    	$("label[for='fin_psb_end_date']").text(obj_3.paypal_sb.psb_end_date);
+    	$("label[for='fin_psb_discount_currency']").text(obj_3.paypal_sb.psb_discount_currency);
+    	$("label[for='fin_psb_min_purchase_amt']").text(obj_3.paypal_sb.psb_min_purchase_amt + '$');
+
+    	$("label[for='fin_msb_start_date']").text(obj_3.merchant_sb.msb_start_date);
+    	$("label[for='fin_msb_end_date']").text(obj_3.merchant_sb.msb_end_date);
+    	$("label[for='fin_msb_discount_currency']").text(obj_3.merchant_sb.msb_discount_currency);
+    	$("label[for='fin_msb_min_purchase_amt']").text(obj_3.merchant_sb.msb_min_purchase_amt);
+
+    	$(".obj_3_details").show(500);
+    	$('#fin_psb').hide();
+    	$('#fin_msb').hide();
+    	if(obj_3.payout_type == 'paypal_sb'){
+    		$('#fin_psb').show();
+    	}
+    	else{
+    		$('#fin_msb').show();
+    	}
+    });  
+
+    $( "#obj_4" ).click(function() {
+    	obj_4.budget = $('#budget').val();
+    	obj_4.funding_type = $('#funding_type').val();
+    	obj_4.funding_accno = $('#funding_accno').val();
+
+    	validate_obj_4(obj_4);
+
+    	$("label[for='fin_budget']").text(obj_4.budget + '$');
+    	$("label[for='fin_funding_type']").text(obj_4.funding_type);
+    	$("label[for='fin_funding_accno']").text(obj_4.funding_accno);
+
+    	$(".obj_4_details").show(500);
+    });  
+
+    $('#fb').click(function(){
+    	reward_type = 'frequency_based';
+    	hide_reward_type('frequency_based');
+    	obj_2.reward_type = 'frequency_based';
+    	console.log(JSON.stringify(obj_2));
+    });
+
+    $('#ab').click(function(){
+    	reward_type = 'amount_based';
+    	hide_reward_type('amount_based');
+    	obj_2.reward_type = 'amount_based';
+    	console.log(JSON.stringify(obj_2));
+    });
+
+    $('#psb').click(function(){
+    	payout_type = 'paypal_sb';
+    	hide_psyout_type('paypal_sb');
+    	obj_3.payout_type = 'paypal_sb';
+    	console.log(JSON.stringify(obj_3));
+    });
+
+    $('#msb').click(function(){
+    	paypal_type = 'merchant_sb';
+    	hide_paypal_type('merchant_sb');
+    	obj_3.paypal_type = 'merchant_sb';
+    	console.log(JSON.stringify(obj_3));
+    });
+
+    $('#submit_all').click(function(){
+
+    	$('#created').modal(); 
+    });
+});	
+</script>
+{<body}
+
+
+
+<div class="row">
+	<div class="col-md-2"></div>
+	<div class="col-md-8">
+		<div class="panel panel-primary">
+		  <div class="panel-heading">Create Reward Campaign</div>
+		  <div class="panel-body">
+				<div class="row">
+
+				<!--<div class="col-md-2"></div>-->
+
+				<div class="col-md-3">
+					<button type="button" class="btn btn-primary btn-block obj_1_builder" data-toggle="modal" data-target="#campaign_level" data-whatever="@mdo">Campaign Level Details <span class="badge display_none"></span></button>
+					<div class="empty_space"></div>
+					<div class="obj_1_details display_none fin_details">
+						<p><label class="fin_key">Campaign Name: &nbsp</label><label class="fin_value" for="fin_campaign_name"></label></p>
+						<p><label class="fin_key">Campaign Details: &nbsp</label><label class="fin_value" for="fin_campaign_details"></label></p>
+						<p><label class="fin_key">Country: &nbsp</label><label class="fin_value" for="fin_country"></label></p>
+						<p><label class="fin_key">Locale Code: &nbsp</label><label class="fin_value" for="fin_locale_code"></label></p>
+						<p><label class="fin_key">Start Date: &nbsp</label><label class="fin_value" for="fin_start_date"></label></p>
+						<p><label class="fin_key">End Date: &nbsp</label><label class="fin_value text-right" for="fin_end_date"></label></p>
+					</div>
+				</div>
+
+				<div class="col-md-3">
+					<button type="button" id='reward_type_selector' class="btn btn-primary btn-block obj_2_builder" data-toggle="modal" data-target="#reward_type" data-whatever="@mdo">Reward Type <span class="badge display_none"></span></button>
+					<div class="empty_space"></div>
+					<div class="obj_2_details display_none fin_details">
+						<p><label class="fin_key">Reward Type: &nbsp</label><label class="fin_value" for="fin_reward_type"></label></p>
+						<div id='fin_fb' class='display_none'>
+						<p><label class="fin_key">Min. Spent per visit: &nbsp</label><label class="fin_value" for="fin_fb_min_spent_pv"></label></p>
+						<p><label class="fin_key">No. of Transactions: &nbsp</label><label class="fin_value" for="fin_fb_no_of_visits"></label></p>
+						<!--<p><label class="fin_key">Min. visits for reward: &nbsp</label><label class="fin_value" for="fin_fb_min_visits_for_reward"></label></p>-->
+						<p><label class="fin_key">Max. Reward Count: &nbsp</label><label class="fin_value text-right" for="fin_fb_max_reward_count"></label></p>
+						</div>
+						<div id='fin_ab' class='display_none'>
+						<p><label class="fin_key">Min. Spent per visit: &nbsp</label><label class="fin_value" for="fin_ab_min_spent_pv"></label></p>
+						<p><label class="fin_key">Amount spent: &nbsp</label><label class="fin_value" for="fin_ab_amt_spent"></label></p>
+						<!--<p><label class="fin_key">Min. visits for reward: &nbsp</label><label class="fin_value" for="fin_ab_min_visits_for_reward"></label></p>-->
+						<p><label class="fin_key">Max. Reward Count: &nbsp</label><label class="fin_value text-right" for="fin_ab_max_reward_count"></label></p>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-3">
+					<button type="button" id='payout_type_selector' class="btn btn-primary btn-block obj_3_builder" data-toggle="modal" data-target="#payout_type" data-whatever="@mdo">Payout Type <span class="badge display_none"></span></button>
+					<div class="empty_space"></div>
+					<div class="obj_3_details display_none fin_details">
+						<p><label class="fin_key">Payout Type: &nbsp</label><label class="fin_value" for="fin_payout_type"></label></p>
+						<div id='fin_psb' class='display_none'>
+						<p><label class="fin_key">PSB Start Date: &nbsp</label><label class="fin_value" for="fin_psb_start_date"></label></p>
+						<p><label class="fin_key">PSB End Date: &nbsp</label><label class="fin_value" for="fin_psb_end_date"></label></p>
+						<p><label class="fin_key">Discount Currency: &nbsp</label><label class="fin_value" for="fin_psb_discount_currency"></label></p>
+						<p><label class="fin_key">Transaction Amount<small></small>: &nbsp</label><label class="fin_value text-right" for="fin_psb_min_purchase_amt"></label></p>
+						</div>
+						<div id='fin_msb' class='display_none'>
+						<p><label class="fin_key">MSB Start Date: &nbsp</label><label class="fin_value" for="fin_msb_start_date"></label></p>
+						<p><label class="fin_key">MSB End Date: &nbsp</label><label class="fin_value" for="fin_msb_end_date"></label></p>
+						<p><label class="fin_key">Discount Currency: &nbsp</label><label class="fin_value" for="fin_msb_discount_currency"></label></p>
+						<p><label class="fin_key">Min Purchase Amount: &nbsp</label><label class="fin_value text-right" for="fin_msb_min_purchase_amt"></label></p>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-3">
+					<button type="button" class="btn btn-primary btn-block obj_4_builder" data-toggle="modal" data-target="#funding_details" data-whatever="@mdo">Funding Details <span class="badge display_none"></span></button>
+					<div class="empty_space"></div>
+					<div class="obj_4_details display_none fin_details">
+						<p><label class="fin_key">Budget: &nbsp</label><label class="fin_value" for="fin_budget"></label></p>
+						<p><label class="fin_key">Funding Type: &nbsp</label><label class="fin_value" for="fin_funding_type"></label></p>
+						<p><label class="fin_key">Funding Acc. No.: &nbsp</label><label class="fin_value" for="fin_funding_accno"></label></p>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="row">
+		  	<div class="col-md-5"></div>
+		  	<div class="col-md-2">
+		  		<button type="button" id="submit_all" class="btn btn-success btn-block" data-toggle="modal">Submit</button>
+		  	</div>
+		  	<div class="col-md-5"></div>
+		  </div>
+		  </div>
+
+		</div>
+	</div>
+	<div class="col-md-2"></div>
+</div>
+
+
+
+	
+
+<div class="modal fade" id="campaign_level" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="campaignLevelLabel">Campaign Level Details</h4>
+        <div><p class='text-danger obj_1_error obj_error'></p></div>
+      </div>
+      <div class="modal-body">
+        <form>
+          	<div class="form-group">
+            	<label for="campaign-name" class="control-label">Campaign Name:</label>
+            	<input type="text" class="form-control" id="campaign-name">
+          	</div>
+          	<div class="form-group">
+            	<label for="campaign-details" class="control-label">Campaign Details:</label>
+            	<textarea class="form-control" id="campaign-details" placeholder="Enter campaign details here (200 chars)"></textarea>
+          	</div>
+          	<div class="row">
+	          	<div class="col-md-4">
+		          	<div class="form-group">
+		            	<label for="country" class="control-label">Country</label>
+		            	<select class="form-control" id="country">
+						</select>
+		        	</div>
+	        	</div>
+	        	<div class="col-md-2"></div>
+	        	<div class="col-md-4">
+		          	<div class="form-group">
+		            	<label for="locale_code" class="control-label">Locale Code</label>
+		            	<select class="form-control" id="locale_code">
+						</select>
+		        	</div>
+	        	</div>
+        	</div>
+
+        	<div class="row">
+	          	<div class="col-md-4">
+		          	<div class="form-group">
+		            	<label for="start_date" class="control-label">Start Date</label>
+            			<input type="text" class="form-control datepicker" id="start_date" placeholder="YYYY-MM-DD">
+		        	</div>
+	        	</div>
+	        	<div class="col-md-2"></div>
+	        	<div class="col-md-4">
+		          	<div class="form-group">
+		            	<label for="end_date" class="control-label">End Date</label>
+            			<input type="text" class="form-control datepicker" id="end_date" placeholder="YYYY-MM-DD">
+		        	</div>
+	        	</div>
+        	</div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+      	<button type="button" class="btn btn-default reset_btn">Reset</button>
+	    <button type="button" class="btn btn-default close_btn" data-dismiss="modal">Close</button>
+	    <button type="button" id="obj_1" class="btn btn-primary save_btn" data-dismiss="modal">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="reward_type" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="rewardTypeLabel">Reward Type</h4>
+        	<div><p class='text-danger obj_2_error obj_error'></p></div>
+        	<!--<div class="btn-group" id="reward_selected">
+			  <button type="button" id="btn_reward_type" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+			    
+			  </button><br><br>
+			</div>-->
+
+			<div class="btn-group" id="reward_selected">
+			  <button type="button" id="btn_reward_type" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+			    Action <span class="caret"></span>
+			  </button><br><br>
+			  <ul class="dropdown-menu" role="menu">
+			    <li><a id='fb' href="#">Frequency Based</a></li>
+			    <li><a id='ab' href="#">Amount Based</a></li>
+			  </ul>
+			</div>
+
+      </div>
+      <div class="modal-body">
+      <!--reward type selection:start-->
+      	<div class="row" id="select_reward_type">
+      		<div class="col-md-2"></div>
+          	<div class="col-md-3">
+  				<button type="button" class="button_reward_type" id="frequency_based">Frequency Based</button>
+  			</div>
+      		<div class="col-md-2"></div>
+          	<div class="col-md-3">
+  				<button type="button" class="button_reward_type" id="amount_based">Amount Based</button>
+  			</div>
+  			<div class="col-md-2"></div>
+      	</div>
+      	<!--reward type selection:end-->
+      	<!--reward details:start-->
+      	<div class="display_none frequency_based">
+      		<form><br>
+      		<div class="row">
+
+	      		<div class="col-md-4">
+	      			<div class="form-group">
+	            	<label for="fb_min_spent_pv" class="control-label">Min. Spent per visit:</label>
+	            	<input type="number" class="form-control" id="fb_min_spent_pv" min="0" step="1">
+	          		</div>
+	          	</div>
+
+	          	<div class="col-md-2"></div>
+
+	          	<div class="col-md-4">
+	          		<div class="form-group">
+	            	<label for="fb_no_of_visits" class="control-label">No. of Transactions:</label>
+	            	<input type="number" class="form-control" id="fb_no_of_visits" min="0">
+	          		</div>
+	          	</div>
+
+	          	<div class="col-md-2"></div>
+
+	        </div>
+	        <div class="row">
+	      		
+
+	          	<div class="col-md-4">
+	          		<div class="form-group">
+	            	<label for="fb_max_reward_count" class="control-label">Max. reward count:&nbsp<small>(Leave blank for infinite)</small></label>
+	            	<input type="number" class="form-control" id="fb_max_reward_count" min="0">
+	          		</div>
+	          	</div>
+
+	          	<div class="col-md-2"></div>
+
+	          	<div class="col-md-4">
+	      			<!--<div class="form-group">
+	            	<label for="fb_min_visits_for_reward" class="control-label">Min. visits for reward:</label>
+	            	<input type="number" class="form-control" id="fb_min_visits_for_reward" min="0">
+	          		</div>-->
+	          	</div>
+
+	        </div>
+      		</form>
+      	</div>
+      	<!--reward details:end-->
+      	<!--reward details:start-->
+      	<div class="display_none amount_based">
+      		<form><br>
+      		<div class="row">
+
+	      		<div class="col-md-4">
+	      			<div class="form-group">
+	            	<label for="ab_min_spent_pv" class="control-label">Min. Spent per visit:</label>
+	            	<input type="number" class="form-control" id="ab_min_spent_pv" min="0" step="1">
+	          		</div>
+	          	</div>
+
+	          	<div class="col-md-2"></div>
+
+	          	<div class="col-md-4">
+	          		<div class="form-group">
+	            	<label for="ab_amt_spent" class="control-label">Total amount spent:</label>
+	            	<input type="number" class="form-control" id="ab_amt_spent" min="0">
+	          		</div>
+	          	</div>
+
+	          	<div class="col-md-2"></div>
+
+	        </div>
+	        <div class="row">
+
+	          	<div class="col-md-4">
+	          		<div class="form-group">
+	            	<label for="ab_max_reward_count" class="control-label">Max reward count:</label>
+	            	<input type="number" class="form-control" id="ab_max_reward_count" min="0">
+	          		</div>
+	          	</div>
+
+	          	<div class="col-md-2"></div>
+
+	          	<div class="col-md-4">
+	      			<!--<div class="form-group">
+	            	<label for="ab_min_visits_for_reward" class="control-label">Min. visits for reward:</label>
+	            	<input type="number" class="form-control" id="ab_min_visits_for_reward" min="0">
+	          		</div>-->
+	          	</div>
+	        </div>
+      		</form>
+      	</div>
+      	<!--reward details:end-->
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="btn btn-default">Reset</button>
+	    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	    <button type="button" id="obj_2" class="btn btn-primary" data-dismiss="modal">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="payout_type" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="payoutTypeLabel">Payout Type</h4>
+        	<div><p class='text-danger obj_3_error obj_error'></p></div>
+
+			<div class="btn-group" id="payout_selected">
+			  <button type="button" id="btn_payout_type" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+			    Action <span class="caret"></span>
+			  </button><br><br>
+			  <ul class="dropdown-menu" role="menu">
+			    <li><a id='psb' href="#">PSB</a></li>
+			    <li><a id='msb' href="#">MSB</a></li>
+			  </ul>
+			</div>
+
+      </div>
+      <div class="modal-body">
+      <!--reward type selection:start-->
+      	<div class="row" id="select_payout_type">
+      		<div class="col-md-2"></div>
+          	<div class="col-md-3">
+  				<button type="button" class="button_payout_type" id="paypal_sb">PayPal Specific Balance</button>
+  			</div>
+      		<div class="col-md-2"></div>
+          	<div class="col-md-3">
+  				<button type="button" class="button_payout_type" id="merchant_sb">Merchant Specific Balance</button>
+  			</div>
+  			<div class="col-md-2"></div>
+      	</div>
+      	<!--reward type selection:end-->
+      	<!--reward details:start-->
+      	<div class="display_none paypal_sb">
+      		<form><br>
+      		<div class="row">
+
+	      		<div class="col-md-4">
+	      			<div class="form-group">
+	            	<label for="psb_start_date" class="control-label">PSB Start Date:</label>
+	            	<input type="text" class="form-control datepicker" id="psb_start_date" placeholder='YYYY/MM/DD'>
+	          		</div>
+	          	</div>
+
+	          	<div class="col-md-2"></div>
+
+	          	<div class="col-md-4">
+	          		<div class="form-group">
+	            	<label for="psb_end_date" class="control-label">PSB End Date:</label>
+	            	<input type="text" class="form-control datepicker" id="psb_end_date" placeholder='YYYY/MM/DD'>
+	          		</div>
+	          	</div>
+
+	          	<div class="col-md-2"></div>
+
+	        </div>
+	        <div class="row">
+	      		<div class="col-md-4">
+	      			<div class="form-group">
+	            	<label for="psb_discount_currency" class="control-label">Discount Currency:</label>
+	            	<select class="form-control" id="psb_discount_currency">
+	            		<option>USD</option>
+	            		<option>EUR</option>
+	            		<option>RUB</option>
+	            	</select>
+	          		</div>
+	          	</div>
+
+	          	<div class="col-md-2"></div>
+
+	          	<div class="col-md-4">
+	          		<div class="form-group">
+	            	<label for="psb_min_purchase_amt" class="control-label">Transaction Amount&nbsp<small></small>:</label>
+	            	<input type="number" class="form-control" id="psb_min_purchase_amt" min="0" step="1">
+	          		</div>
+	          	</div>
+	        </div>
+      		</form>
+      	</div>
+      	<!--reward details:end-->
+      	<!--reward details:start-->
+      	<div class="display_none merchant_sb">
+      		<form><br>
+      		<div class="row">
+
+	      		<div class="col-md-4">
+	      			<div class="form-group">
+	            	<label for="msb_start_date" class="control-label">MSB Start Date:</label>
+	            	<input type="text" class="form-control datepicker" id="msb_start_date" placeholder='YYYY/MM/DD'>
+	          		</div>
+	          	</div>
+
+	          	<div class="col-md-2"></div>
+
+	          	<div class="col-md-4">
+	          		<div class="form-group">
+	            	<label for="msb_end_date" class="control-label">MSB End Date:</label>
+	            	<input type="text" class="form-control datepicker" id="msb_end_date" placeholder='YYYY/MM/DD'>
+	          		</div>
+	          	</div>
+
+	          	<div class="col-md-2"></div>
+
+	        </div>
+	        <div class="row">
+	      		<div class="col-md-4">
+	      			<div class="form-group">
+	            	<label for="msb_discount_currency" class="control-label">Discount Currency:</label>
+	            	<input type="text" class="form-control" id="msb_discount_currency">
+	          		</div>
+	          	</div>
+
+	          	<div class="col-md-2"></div>
+
+	          	<div class="col-md-4">
+	          		<div class="form-group">
+	            	<label for="msb_min_purchase_amt" class="control-label">Min. Purchase Amount:</label>
+	            	<input type="number" class="form-control" id="msb_min_purchase_amt" min="0" step="1">
+	          		</div>
+	          	</div>
+	        </div>
+      		</form>
+      	</div>
+      	<!--reward details:end-->
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="btn btn-default">Reset</button>
+	    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	    <button type="button" id="obj_3" class="btn btn-primary" data-dismiss="modal">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="funding_details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="fundingDetailsLabel">Funding Details</h4>
+        <div><p class='text-danger obj_4_error obj_error'></p></div>
+      </div>
+      <div class="modal-body">
+        <form>
+	        <div class="row">
+
+		        <div class="col-md-4">
+		          	<div class="form-group">
+		            	<label for="budget" class="control-label">Budget:<small></small></label>
+		            	<input type="number" class="form-control" id="budget" min="0" step="100">
+		          	</div>
+		        </div>
+
+	        	<div class="col-md-4"></div>
+
+		        <div class="col-md-4">
+		          	<div class="form-group">
+		            	<label for="funding_type" class="control-label">Funding Type:</label>
+		            	<select class="form-control" id="funding_type">
+		            		<option value='PREFUNDED'>PREFUNDED</option>
+		            		<option value='POSTFUNDED'>POSTFUNDED</option>
+						</select>
+		          	</div>
+	          	</div>
+
+	        </div>
+
+        	<div class="form-group">
+            	<label for="funding_accno" class="control-label">Funding Account Number:</label>
+            	<input type="text" class="form-control" id="funding_accno">
+          	</div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+      	<button type="button" class="btn btn-default reset_btn">Reset</button>
+	    <button type="button" class="btn btn-default close_btn" data-dismiss="modal">Close</button>
+	    <button type="button" id="obj_4" class="btn btn-primary save_btn" data-dismiss="modal">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{/body}<!-- Modal -->
+<div class="modal fade" id="created" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Success</h4>
+      </div>
+      <div class="modal-body">
+        Reward Campaign Created successfully!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

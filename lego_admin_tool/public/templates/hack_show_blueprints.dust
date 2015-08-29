@@ -1,0 +1,98 @@
+{>"layouts/master_3" /}
+<link rel="stylesheet" type="text/css" href="../css/styles.css" />
+
+<script type="text/javascript">
+
+
+function display_list(bp){
+	var btn = $('<button>').addClass('btn').addClass('btn-default').addClass('btn-block').addClass('campaign_btn').attr({'id':'btn'+bp.code});
+	btn.append(bp.code);
+	$('.list_of_campaigns').append(btn);
+}
+
+var meta_condition_mapper = {
+	"type":"Condition Type",
+	"currency": "Currency",
+	"repeat_threshold": "Repeat Threshold",
+	"platform": "Platform",
+	"sender_country": "Sender Country",
+	"sender_acc_no": "Sender Account Number",
+	"sender_pxp": "Sender PXP",
+	"receiver_country": "Receiver Country",
+	"receiver_acc_no": "Receiver Account Number",
+	"min_amount": "Min. Transaction Amount"
+};
+
+function display_campaign_info(campaign){
+	var meta = campaign.meta;
+	console.log(meta);
+	$('.selected_campaign_name').empty();
+	$('.selected_campaign').empty();
+	$('.selected_campaign').append('<br>'); 
+	$('.selected_campaign').append('<br>');
+	$('#selected_campaign_name').text(campaign.code);
+	var p = meta_condition_mapper;
+	console.log(meta.conditions);
+	var r = meta.conditions;
+	var key;
+	for (key in p) {
+	  if (p.hasOwnProperty(key)) {
+		if(meta.conditions.key != ""){
+			console.log(r);
+			console.log(p[key] + '->' + r[key]);
+			if(r[key] != ""){
+				var abc = '<p class="x">' + p[key] + ':' + r[key] + '</p>';
+				$('.selected_campaign').append(abc);
+			}
+		}		
+	  }
+	}
+}
+
+var all_campaigns = [];
+
+$(function(){
+	var x = {result|s};
+	for(var i=0; i<x.length; i++){
+		if(x[i].code.match(/Campaign/g)!=null){
+			all_campaigns.push(x[i]);
+			console.log(x[i]);
+			display_list(x[i]);
+		}
+	}
+	
+	$('.campaign_btn').click(function(){
+		for(var i=0; i<all_campaigns.length; i++){
+			if(this.id == ('btn'+all_campaigns[i].code)){
+				display_campaign_info(all_campaigns[i]);
+			}
+		}
+	});
+});
+
+
+</script>
+
+
+{<body}
+
+<div class="row content-section">
+<div class="col-md-2"></div>
+<div class="col-md-5" style="height:100%;border-right:1px solid #ddd;border-left:1px solid #ddd;background-color:#f7f9fa">
+	<h1 class="pull-left">Campaigns</h1><hr>
+	<br><br>
+	<div class="row list_of_campaigns">
+	</div>
+</div>
+<div class="col-md-5">
+	<h1 class="pull-left" id="selected_campaign_name"></h1>
+	<br><br>
+	<div class="row selected_campaign"><br><br>
+	
+	</div>
+	<button type="button" class="btn btn-primary" style="margin-left:15px;">Edit</button>
+</div>
+</div>
+
+
+{/body}

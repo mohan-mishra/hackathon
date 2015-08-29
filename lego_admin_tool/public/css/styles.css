@@ -1,0 +1,31 @@
+html, body {
+	height: 100%;
+	margin: 0;
+}
+
+.container-fluid {
+	height: 100%;
+}
+
+.conditions-container {
+	background-color: #f7f9fa;
+	border-right: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+	height: 100%;
+}
+
+.actions-container {
+	height: 100%;
+}
+
+.content-section {
+	height: 100%;
+}
+
+.x{
+	margin-left: 30px;
+}
+
+.selected_campaign{
+
+}

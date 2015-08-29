@@ -1,0 +1,314 @@
+{>"layouts/master" /}
+<link rel="stylesheet" type="text/css" href="../css/dummyy.css">
+<script type="text/javascript" src="../js/jsPlumb/dist/js/dom.jsPlumb-1.7.3.js"></script>
+<script type="text/javascript">
+
+function createAgent(index, value){
+	var newAgent = $('<div>').attr({id:value.code}).addClass('agent');
+			var newAgentTitle = $('<div>').addClass('agent_title');
+			var newAgentContent = $('<div>').addClass('agent_content');
+			/*creating content:start*/
+				var type_label = $('<label>').addClass('label').addClass('agent_label').addClass('agent_content_label').text('type: ');
+				var type = $('<input>').attr({value:value.type, readonly:'true'}).addClass('agent_input').addClass('agent_content_input');
+				type_label.append(type);
+				newAgentContent.append(type_label);
+
+				var filter_label = $('<label>').addClass('label').addClass('agent_label').addClass('agent_content_label').text('filter: ');
+				var filter = $('<input>').attr({value:value.filter, readonly:'true'}).addClass('agent_input').addClass('agent_content_input');
+				filter_label.append(filter);
+				newAgentContent.append(filter_label);
+
+				var params_label = $('<label>').addClass('label').addClass('agent_label').addClass('agent_content_label').text('params: ');
+				var params=$('<textarea>').addClass('agent_textarea').addClass('agent_content_textarea').text(JSON.stringify(value.params,null,2));
+				params_label.append(params);
+				newAgentContent.append(params_label);
+				/*create expand on the right to show the  params clearly*/
+			/*creating content:end*/
+			var newAgentIO = $('<div>').addClass('agent_io');
+			var agentCodeLabel = $('<label>').addClass('agent_code_label');
+			var agentCodeInput = $('<input>').attr({value:value.code, readonly:'true', size:'25'}).addClass('agent_title_input').addClass('agent_code_input');
+			agentCodeLabel.append(agentCodeInput);
+			newAgentTitle.append(agentCodeLabel);
+			newAgent.append(newAgentTitle);
+			newAgent.append(newAgentContent);
+			newAgent.append(newAgentIO);
+
+			var pos_left = Math.floor(Math.random()*1300);
+			pos_left = pos_left + 'px';
+			newAgent.css('left', pos_left);
+
+			var pos_top = Math.floor(Math.random()*300 + 70);
+			pos_top = pos_top + 'px';
+			newAgent.css('top', pos_top);
+
+			newAgent.css('position', 'absolute');
+
+		$('#container').append(newAgent);
+		jsPlumb.draggable(newAgent, {
+  			drag: function (event, ui) {
+    				jsPlumb.repaintEverything();
+  				}
+		});
+}
+
+function connectify(value){
+	from_agent = value.from_agent;
+	to_agent = value.to_agent;
+	var s = $('#'+from_agent);
+	var t = $('#'+from_agent+'_'+to_agent);
+	jsPlumb.connect({source:s, target:t, anchor:"Continuous", overlays:[ "Arrow", [ "Label", {location:0.75} ]]});
+
+	var s = $('#'+from_agent+'_'+to_agent);
+	var t = $('#'+to_agent);
+	var conn = jsPlumb.connect({source:s, target:t, anchor:"Continuous", overlays:[ "Arrow", [ "Label", {location:0.75} ]]});
+}
+
+function createDataflow(value){
+	var to_agent = value.to_agent;
+	var from_agent = value.from_agent;
+	var newDataflow = $('<div>').attr({id:from_agent+'_'+to_agent}).addClass('dataflow');
+		var newDataflowTitle = $('<div>').addClass('dataflow_title');
+		var newDataflowContent = $('<div>').addClass('dataflow_content');
+		/*creating title:start*/
+			var from_dataflow_label = $('<label>').addClass('label').addClass('dataflow_label').addClass('dataflow_title_label').text('from_agent: ');
+			var from_dataflow_input=$('<input>').attr({value:from_agent, readonly:'true'}).addClass('dataflow_input').addClass('dataflow_title_input');
+			from_dataflow_label.append(from_dataflow_input);
+			newDataflowTitle.append(from_dataflow_label);
+
+			var to_dataflow_label = $('<label>').addClass('label').addClass('dataflow_label').addClass('dataflow_title_label').text('to_agent: ');
+			var to_dataflow_input=$('<input>').attr({value:to_agent, readonly:'true'}).addClass('dataflow_input').addClass('dataflow_title_input');
+			to_dataflow_label.append(to_dataflow_input);
+			newDataflowTitle.append(to_dataflow_label);
+		/*creating title:end*/
+		newDataflow.append(newDataflowTitle);
+		newDataflow.append(newDataflowContent);
+	$('#container_dataflow').append(newDataflow);
+	newDataflow.draggable({
+        containment: 'parent'
+    });
+    /*creating content:start*/
+    	appendField(value);
+	/*creating content:end*/
+	/*connectify(value);*/
+}
+
+function appendField(value){
+	var from_path_input = $('<input>').attr({value:value.from_path}).addClass('dataflow_content_from_path');
+	var to_placeholder_input = $('<input>').attr({value:value.to_placeholder}).addClass('dataflow_content_to_placeholder');
+	var newline = $('<br>');
+	$('.dataflow_content', '#'+value.from_agent+'_'+value.to_agent).append(from_path_input);
+	$('.dataflow_content', '#'+value.from_agent+'_'+value.to_agent).append('<label>-></label>');
+	$('.dataflow_content', '#'+value.from_agent+'_'+value.to_agent).append(to_placeholder_input);
+	$('.dataflow_content', '#'+value.from_agent+'_'+value.to_agent).append(newline);
+}
+
+function existsDataflow(value){
+	var identifier = '#'+value.from_agent+'_'+value.to_agent;
+	if($(identifier).length > 0){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
+var connectionArray = [];
+function existsConnection(value){
+		if(connectionArray.indexOf(JSON.stringify({
+			"source":value.from_agent, 
+			"target":value.to_agent
+		})) >= 0){
+			return 1;
+		}
+		else{
+			return 0;
+		}
+}
+
+var agents_array = [];
+var dataflow_array = [];
+var bc;
+
+function highlight_dataflow(connection){
+	console.log("inhighlight");
+	var from_agent = connection.sourceId;
+	var to_agent = connection.targetId;
+	$('#'+from_agent+'_'+to_agent).css( "background-color", "red" );
+}
+
+function dehighlight_dataflow(connection){
+	console.log("inhighlight");
+	var from_agent = connection.sourceId;
+	var to_agent = connection.targetId;
+	$('#'+from_agent+'_'+to_agent).css( "background-color", "#F5DA81" );
+}
+
+function connectify_agents(value){
+	var from_agent = $('#' + value.from_agent);
+	var to_agent = $('#' + value.to_agent);
+	var conn = jsPlumb.connect({source: from_agent, target: to_agent, anchor:"Continuous", overlays:[ "Arrow", [ "Label", {location:0.75} ]],detachable:false});
+	connectionArray.push(JSON.stringify({"source":conn.sourceId, "target":conn.targetId}));
+	conn.bind("mouseover", function(connection) {
+		highlight_dataflow(connection);
+	});
+	conn.bind("mouseout", function(connection) {
+		dehighlight_dataflow(connection);
+	});
+}
+
+function position_dataflow(){
+	var dataflow_dom = $('.dataflow');
+	var nos = dataflow_dom.length;
+	for(var i=0; i<nos; i++){
+		var pos_left = (Math.floor(i%4) * 317 + 20) + 'px';
+		$(dataflow_dom[i]).css('left', pos_left);
+		var pos_top = (Math.floor(i/4) * 70 + 500) + 'px';
+		$(dataflow_dom[i]).css('top', pos_top);
+	}
+}
+
+$(function(){
+	var x = '{result.datum|s}';
+	var data = jQuery.parseJSON(x);
+	bc = data.code;
+	console.log(bc);
+	jsPlumb.ready(function() {
+		jsPlumb.setContainer($('#container'));
+		console.log(data);
+		agents_array = data.agents;
+		dataflow_array = data.data_flow;
+		jQuery.each(agents_array, function(index, value){
+			createAgent(index, value);
+		});
+		jQuery.each(dataflow_array, function(index, value){
+				if(existsDataflow(value) == 1){
+					appendField(value);
+				}
+				else{
+					createDataflow(value);
+				}
+		});
+		position_dataflow();
+		jQuery.each(dataflow_array, function(index, value){
+				if(existsConnection(value)){
+				}
+				else{
+					connectify_agents(value);
+				}
+		});
+	});
+	dialogify();
+});
+
+function dialogify(){
+	  dialog = $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 700,
+      width: 500,
+      modal: true,
+      buttons: {
+        "Post": postit,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+      }
+      });
+ 
+      var form = dialog.find( "form" ).on( "submit", function( event ) {
+        event.preventDefault();
+        postit();
+      });
+	  $( "#post_event" ).button().on( "click", function() {
+        dialog.dialog( "open" );
+      });
+}
+
+function postit(){
+	var event_data = $.trim($("#eventk").val());
+	var csrf = $('#_csrf').val();
+	event_data = JSON.stringify(event_data);
+	event_data = jQuery.parseJSON(event_data);
+	console.log('postit:'+bc);
+	post_event(event_data, csrf);
+	dialog.dialog( "close" );
+}
+
+function post_event(event_data, csrf){
+	console.log('post_event:'+bc);
+	$.ajax({
+		url: "/receive_event",
+		method: "POST",
+		data: {
+			"_csrf": csrf,
+			"event_data": event_data,
+			"blueprint_code": bc
+		},
+		dataType: "json"
+	}).done(function(msg){
+		console.log(msg);
+		var bp_index;
+		for(var i = 0; i<msg.length; i++){
+			if(msg[i].blueprintCode == bc){
+				bp_index = i;
+			}
+		}
+		var bp_event_io = msg[bp_index];
+		var agent_executions = bp_event_io.agentExecutions;
+		clear_previous_io();
+		jQuery.each(agent_executions, function(index, value){
+			append_io(value);
+		});
+	});
+}
+
+function clear_previous_io(){
+	$('.agent_io_textarea_input').remove();
+	$('.agent_io_textarea_output').remove();
+}
+
+function append_io(value){
+	/*input*/
+	var newAgentIO_input = $('<textarea>').addClass('agent_io_textarea').addClass('agent_io_textarea_input');
+	var newAgentIO_output = $('<textarea>').addClass('agent_io_textarea').addClass('agent_io_textarea_output');
+	$('.agent_io','#'+value.agent).append(newAgentIO_input);
+	$('.agent_io','#'+value.agent).append(newAgentIO_output);
+	$('.agent_io_textarea_input', '#'+value.agent).text(JSON.stringify(value.input, null, 2));
+	$('.agent_io_textarea_output', '#'+value.agent).text(JSON.stringify(value.output, null, 2));
+	if(value.proceed == false){
+		console.log('false');
+		$('.agent_title','#'+value.agent).css( "background-color", "red" );
+	}
+	else{
+		console.log('true');
+		$('.agent_title','#'+value.agent).css( "background-color", "#ACFA58" );
+	}
+	/*output*/
+	/*agent*/
+	/*proceed*/
+}
+
+</script>
+
+{<body}
+
+
+<div id="dialog-form" style='margin-left:auto;margin-right:auto;' title="Post an Event">
+  <form>
+    <fieldset>
+      <textarea cols='50' rows='25' id="eventk" placeholder='Enter event JSON here'></textarea>
+      <input type = "hidden" id='_csrf' name = "_csrf" value = "{_csrf}" />
+      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+
+<button id='post_event'>Post Event</button>
+<button id='edit_blueprint' style='float:right;' class="pure-button pure-button-primary">Edit Blueprint</button>
+
+<div id="container"></div>
+<div id="container_dataflow"></div>
+
+{/body}

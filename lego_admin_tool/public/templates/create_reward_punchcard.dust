@@ -1,0 +1,171 @@
+{>"layouts/master" /}
+<script type="text/javascript" src="../js/create_reward_punchcard.js"></script>  <!--include validations, getJSON and ajax calls-->
+{<body}
+<div class="pure-g">
+    <div class="pure-u-1-5"></div>
+    <div class="pure-u-3-5">
+        <form class="pure-form pure-form-aligned" id='reward_form' name='reward_form' action="/create_reward" method="POST">
+    <fieldset>
+        <div class="pure-control-group">
+            <label for="campaign_name">Campaign Name</label>
+            <input  id="reward_campaign_name" name="reward_campaign_name" type="text" class="pure-u-1-2" required>
+            <i class="fa fa-question-circle" title="Enter Campaign name here" style="margin-left:10px;"></i>
+        </div>
+          
+        <div class="pure-control-group">
+            <label for="campaign_details">Campaign Details</label>
+            <textarea id="reward_campaign_details" name="reward_campaign_details" rows="4" cols="50" maxlength="200" placeholder="Enter Reward program details here (200 characters)" required></textarea>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="country">Country</label>
+            <select name="reward_country" id="reward_country" class="pure-u-1-4" required></select>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="locale_code">Locale Code</label>
+            <select name="reward_locale_code" id="reward_locale_code" class="pure-u-1-4"></select>
+        </div>
+
+        <hr>
+
+        <div class="pure-control-group">
+            <label for="campaign_start_date">Campaign Start Date</label>
+            <input id="reward_start_date" name="reward_start_date" type="text" placeholder="YYYY-MM-DD" class="datepicker pure-u-1-6" required><i class="fa fa-calendar" style="margin-left:10px;" title="Enter campaign start date"></i> 
+        </div>
+
+        <div class="pure-control-group">
+            <label for="campaign_end_date">Campaign End Date</label>
+            <input id="reward_end_date" name="reward_end_date" type="text" placeholder="YYYY-MM-DD" class="datepicker pure-u-1-6" required><i class="fa fa-calendar" style="margin-left:10px;" title="Enter campaign end date"></i>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="campaign_type">Reward Type</label>
+            <select name="reward_type" id="reward_type" class="pure-u-1-4">
+                <option value="TXN_COUNT">Frequency based</option>
+                <option value="TXN_AMOUNT">Amount based</option>
+            </select> 
+        </div>
+
+        <div id="_frequency_based">
+        <div class="pure-control-group">
+            <label for="fb_min_spent">Minimum spent per visit</label>
+            <input id="reward_fb_min_spent" name="reward_fb_min_spent" type="text" required>
+        </div>
+        <div class="pure-control-group">
+            <label for="min_visit_count">Minimum visits for reward</label>
+            <input id="reward_fb_min_visit_count" name="reward_fb_min_visit_count" type="text" required>
+        </div>
+        </div>
+        
+        <div id="_amount_based" style="display:none;">
+        <div class="pure-control-group">
+            <label for="ab_min_spent">Minimum spent per visit</label>
+            <input id="reward_ab_min_spent" name="reward_ab_min_spent" type="text">
+        </div>
+        <div class="pure-control-group">
+            <label for="total_amount_spent">Total amount spent for reward</label>
+            <input id="reward_fb_total_amount_spent" name="reward_fb_total_amount_spent" type="text">  <!--make this field required-->
+        </div>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="l_max_reward_count">Max. Reward Count</label>
+            <input type="number" name="max_reward_count" id="max_reward_count"  min="1" max="12" value="1" style="margin-left:10px;" class="pure-u-1-12">
+        </div>
+
+        <div class="pure-control-group">
+            <label for="campaign_description">Campaign Description</label>
+            <textarea id="reward_campaign_description" name="reward_campaign_description" rows="4" cols="50" maxlength="200" placeholder="Enter Reward program description here (200 characters)" required></textarea>
+        </div>
+
+
+
+        <hr>
+
+        <div class="pure-control-group">
+            <label for="payouttype">Payout Type</label>
+            <select name="payout_type" id="payout_type" class="pure-u-1-4">
+                <option value="blank" selected="selected">--Select--</option>
+                <option value="psb">PSB</option>
+                <option value="msb">MSB</option>
+                <option value="balance">Balance</option>
+            </select> 
+        </div>
+
+
+
+
+<!--Insert fields required for MSB here. These will be added to PSB fields.-->
+        <div class="hidden" id="hidden">
+        <div class="pure-control-group">
+            <label for="l_payout_start_date">Payout Start Date</label>
+            <input id="payout_start_date" name="payout_start_date" type="text" placeholder="YYYY-MM-DD" class="datepicker pure-u-1-6" required><i class="fa fa-calendar" style="margin-left:10px;"></i>
+            <input type="number" name="payout_start_hour" id="payout_start_hour"  min="0" max="12" value="0" style="margin-left:10px;" class="pure-u-1-12" required>
+            <select name="start_meridian"  class="pure-u-1-12" style="margin-left:10px;">
+                <option value="am">AM</option>
+                <option value="pm">PM</option>
+            </select> 
+        </div>
+
+        <div class="pure-control-group">
+            <label for="l_payout_end_date">Payout End Date</label>
+            <input id="payout_end_date" name="payout_end_date" type="text" placeholder="YYYY-MM-DD" class="datepicker pure-u-1-6" required><i class="fa fa-calendar" style="margin-left:10px;"></i>
+            <input type="number" name="payout_end_hour" id="payout_end_hour"  min="0" max="12" value="0" style="margin-left:10px;" class="pure-u-1-12" required>
+            <select name="end_meridian" class="pure-u-1-12" style="margin-left:10px;">
+                <option value="am">AM</option>
+                <option value="pm">PM</option>
+            </select> 
+        </div>
+
+        <div class="pure-control-group">
+            <label for="l_discount_currency_and_value">Discount Currency and Value</label>
+            <select name="payout_discount_currency" id="payout_discount_currency" class="pure-u-1-6"></select>
+            <input type="text" id="payout_discount_value" name="payout_discount_value" class="pure-u-1-4" placeholder="Enter Amount" style="margin-left:10px;" required> <label for="l_payout_discount_value_error" id="psb_discount_value_error"></label>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="l_min_purchase_amount">Minimum Purchase Amount</label>
+            <input id="payout_min_purchase_amount" name="payout_min_purchase_amount" type="text" class="pure-u-1-6">
+            <label for="payout_min_purchase_amount_error" id="payout_min_purchase_amount_error"></label>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="l_budget">Budget</label>
+            <input id="payout_budget" name="payout_budget" type="text" class="pure-u-1-6" required>
+            <label for="payout_budget_error" id="payout_budget_error"></label>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="funding_type">Funding Type</label>
+            <select name="payout_funding_type" class="pure-u-1-4">
+                <option value="PRE_FUNDED">PRE_FUNDED</option>
+                <option value="POST_FUNDED">POST_FUNDED</option>
+            </select> 
+        </div>
+
+        <div class="pure-control-group">
+            <label for="l_funding_account_number">Funding Account Number</label>
+            <input id="payout_funding_account_number" name="payout_funding_account_number" type="text" class="pure-u-1-6" required>
+        </div>
+        </div>
+
+        
+
+
+
+
+
+
+        <div class="pure-controls">
+            <input type = "hidden" name = "_csrf" value = "{_csrf}" />
+            <button type="submit" class="pure-button pure-button-primary">Submit</button> 
+        </div>
+    </fieldset>
+</form>
+    </div>
+    <div class="pure-u-1-5"></div>
+</div>
+
+
+{/body}

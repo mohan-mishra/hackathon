@@ -1,0 +1,88 @@
+#dummy{
+  border: 2px;
+}
+
+.agent {
+        position: absolute;
+        border: 1px solid black;
+        background-color: #ddddff;
+        width: 210px;
+      }
+
+      #container {
+        border: 1px solid gray;
+        width: 1500px;
+        height: 400px;
+        background-color: white;
+        font-size: 12px;
+      }
+
+      #container_x {
+        border: 1px solid gray;
+        width: 1500px;
+        height: 550px;
+        background-color: white;
+        font-size: 12px;
+        position: relative;
+      }
+
+      #container_dataflow {
+        border: 1px solid gray;
+        width: 1500px;
+        height: 300px;
+        background-color: white;
+        font-size: 12px;
+      }
+
+      .connect {
+        border: 1px solid gray;
+        background-color: yellow;
+      }
+      
+    .title {
+      padding: 10px;
+      cursor: move;
+    }
+        
+    .agentData {
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      cursor: pointer;
+    }
+
+    .dataflow {
+        position: absolute;
+        border: 1px solid black;
+        background-color: #F5DA81;
+    }
+
+    .dataflowtitle {
+      cursor: move;
+      padding: 10px;
+    }
+
+    .dataflowcontent {
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      cursor: pointer;
+    }
+
+    .agent_title {
+      padding: 3px;
+      cursor: move;
+    }
+
+    .agent_content {
+      background-color: #ffffff;
+    }
+
+    .agent_content_label {
+      display: block;
+    }
+
+    .dataflow_title_label {
+      display: block;
+    }
+

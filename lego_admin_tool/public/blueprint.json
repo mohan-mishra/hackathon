@@ -1,0 +1,168 @@
+{
+    "code": "paypal-debitcard-3-percent-cashback",
+    "title": "PayPal Debit Card 1 Percent Cashback Program",
+    "lifecycle_status": "ENABLED",
+    "meta": {
+        "tags": [
+            "debit_card_cashback"
+        ],
+        "cashback_attributes": {
+            "product_type": "debit_card",
+            "cashback_frequency": "monthly",
+            "cashback_percentage": "3"
+        }
+    },
+    "agents": [
+        {
+            "code": "calculate_1_percent",
+            "type": "calculator",
+            "params": {
+                "expression": "data.sig_txn_amount * 1 / 100",
+                "data": {
+                    "sig_txn_amount": "@@sig_txn_amount@@"
+                },
+                "output": "cashback_amount"
+            }
+        },
+        {
+            "code": "pp_debit_card_txn_listener",
+            "type": "pp_debit_card_txn_listener"
+        },
+        {
+            "code": "pp_debitcard_1_percent_enrollment",
+            "type": "enrollment",
+            "params": {
+                "enrolled_entity_type": "@@enrolled_entity_type@@",
+                "enrolled_entity_id": "@@enrolled_entity_id@@",
+                "auto": true
+            }
+        },
+        {
+            "code": "pp_debitcard_lifetime_cashback_aggregator",
+            "type": "aggregate",
+            "params": {
+                "keys": [
+                    "card_id"
+                ],
+                "input_data": {
+                    "card_id": "@@card_id@@",
+                    "lifetime_cashback_balance": "@@cashback_amount@@"
+                },
+                "sum": [
+                    "lifetime_cashback_balance"
+                ]
+            }
+        },
+        {
+            "code": "pp_debitcard_transaction_aggregator",
+            "type": "aggregate",
+            "params": {
+                "cron": "0 0 0 1 * ?",
+                "keys": [
+                    "card_id"
+                ],
+                "input_data": {
+                    "card_id": "@@card_id@@",
+                    "sig_txn_amount": "@@sig_txn_amount@@",
+                    "pin_txn_amount": "@@pin_txn_amount@@",
+                    "atm_txn_amount": "@@atm_txn_amount@@",
+                    "sig_txn_id": "@@sig_txn_id@@",
+                    "pin_txn_id": "@@pin_txn_id@@",
+                    "atm_txn_id": "@@atm_txn_id@@",
+                    "sig_cashback_amount": "@@cashback_amount@@"
+                },
+                "sum": [
+                    "sig_txn_amount",
+                    "pin_txn_amount",
+                    "atm_txn_amount",
+                    "sig_cashback_amount"
+                ],
+                "distinct": [
+                    "sig_txn_id",
+                    "atm_txn_id",
+                    "atm_txn_id"
+                ]
+            }
+        }
+    ],
+    "data_flow": [
+        {
+            "from_agent": "calculate_1_percent",
+            "from_path": "cashback_amount",
+            "to_agent": "pp_debitcard_transaction_aggregator",
+            "to_placeholder": "cashback_amount"
+        },
+        {
+            "from_agent": "calculate_1_percent",
+            "from_path": "cashback_amount",
+            "to_agent": "pp_debitcard_lifetime_cashback_aggregator",
+            "to_placeholder": "cashback_amount"
+        },
+        {
+            "from_agent": "pp_debit_card_txn_listener",
+            "from_path": "cardId",
+            "to_agent": "pp_debitcard_1_percent_enrollment",
+            "to_placeholder": "enrolled_entity_id"
+        },
+        {
+            "from_agent": "pp_debit_card_txn_listener",
+            "from_path": "cardType",
+            "to_agent": "pp_debitcard_1_percent_enrollment",
+            "to_placeholder": "enrolled_entity_type"
+        },
+        {
+            "from_agent": "pp_debit_card_txn_listener",
+            "from_path": "sigTxnAmount",
+            "to_agent": "calculate_1_percent",
+            "to_placeholder": "sig_txn_amount"
+        },
+        {
+            "from_agent": "pp_debit_card_txn_listener",
+            "from_path": "atmTxnAmount",
+            "to_agent": "pp_debitcard_transaction_aggregator",
+            "to_placeholder": "atm_txn_amount"
+        },
+        {
+            "from_agent": "pp_debit_card_txn_listener",
+            "from_path": "atmTxnId",
+            "to_agent": "pp_debitcard_transaction_aggregator",
+            "to_placeholder": "atm_txn_id"
+        },
+        {
+            "from_agent": "pp_debit_card_txn_listener",
+            "from_path": "pinTxnAmount",
+            "to_agent": "pp_debitcard_transaction_aggregator",
+            "to_placeholder": "pin_txn_amount"
+        },
+        {
+            "from_agent": "pp_debit_card_txn_listener",
+            "from_path": "pinTxnId",
+            "to_agent": "pp_debitcard_transaction_aggregator",
+            "to_placeholder": "pin_txn_id"
+        },
+        {
+            "from_agent": "pp_debit_card_txn_listener",
+            "from_path": "sigTxnAmount",
+            "to_agent": "pp_debitcard_transaction_aggregator",
+            "to_placeholder": "sig_txn_amount"
+        },
+        {
+            "from_agent": "pp_debit_card_txn_listener",
+            "from_path": "sigTxnId",
+            "to_agent": "pp_debitcard_transaction_aggregator",
+            "to_placeholder": "sig_txn_id"
+        },
+        {
+            "from_agent": "pp_debitcard_1_percent_enrollment",
+            "from_path": "enrolled_entity_id",
+            "to_agent": "pp_debitcard_transaction_aggregator",
+            "to_placeholder": "card_id"
+        },
+        {
+            "from_agent": "pp_debitcard_1_percent_enrollment",
+            "from_path": "enrolled_entity_id",
+            "to_agent": "pp_debitcard_lifetime_cashback_aggregator",
+            "to_placeholder": "card_id"
+        }
+    ]
+}

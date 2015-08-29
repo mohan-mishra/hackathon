@@ -1,0 +1,154 @@
+{>"layouts/master_3" /}
+<link rel="stylesheet" type="text/css" href="../css/ifttt.css">
+
+<script type="text/javascript">
+
+function displayChannel(channel){
+	var channel_div = $('<div>').addClass('col-md-4');
+	var channel_link = $('<a href="#">').append('<img id="theImg" src=' + channel.icon + ' />').addClass('text-center').click(function(){
+		showTriggers(channel);
+	});
+	var channel_name = $('<p>').addClass('channel_name').text(channel.name).addClass('text-center');
+	channel_link.append(channel_name);
+	channel_div.append(channel_link);
+	$('.channel_list').append(channel_div);
+}
+
+function showTriggers(channel){
+	console.log(channel);
+	$('.trigger_list').empty();
+	var trig_ul = $('<ul>');
+	for(var i=0; i<channel.triggers.length; i++){
+		console.log(channel.triggers[i]);
+		var trig_li = $('<li>');
+		var trig_a = $('<a href="#">').attr({"id":i}).text(channel.triggers[i].trigger_name).click(function(){
+			fillTrigger(this.id, channel);
+		});
+		trig_li.append(trig_a);
+		trig_ul.append(trig_li);
+	}
+	$('.trigger_list').append(trig_ul);
+}
+
+function comparatorProcessor(inputObj){
+	
+}
+
+function processInput(input){
+	if(input.type == "comparator"){
+		comparatorProcessor(input);
+	}
+	else if(input.type == "number"){
+		numberProcessor(input);
+	}
+	else if(input.type == "text"){
+		numberProcessor(input);
+	}
+	else if(input.type == "select"){
+		numberProcessor(input);
+	}
+}
+
+function showInputs(index, channel){
+	for(var i=0; i<channel.triggers[index].inputs.length; i++){
+		processInput(channel.triggers[index].inputs[i]);
+	}
+}
+
+function fillTrigger(index, channel){
+	$('.selected_trigger_channel').text(channel.name);
+	alert(index);
+	$('.selected_trigger').text(channel.triggers[index].trigger_name);
+	showInputs(index, channel);
+}
+
+function displayAllChannels(channels){
+	for(var i=0; i<channels.length; i++){
+		console.log(channels[i].name);
+		displayChannel(channels[i]);
+	}
+}
+
+function getChannels(){
+	$.getJSON('../channels.json', function(data){
+		var jsondata = data;
+		displayAllChannels(jsondata);
+	    $('html, body').animate({
+	        scrollTop: $("#step1").offset().top
+	    }, 1000);
+    });
+}
+
+$(function(){
+	
+});
+</script>
+
+{<body}
+<div class='containment'>
+<div class="row">
+<div class='col-md-1'></div>
+<div class='col-md-10'>
+	<div class="page-header">
+  	<h2>IFTTT for PayPal<small></small></h2>
+	</div>
+</div>
+<div class='col-md-1'></div>
+</div>
+
+<div class="row">
+<div class='col-md-2'></div>
+<div class='col-md-8'>
+  	<h3>Create a Recipe<small></small></h3><hr>
+</div>
+<div class='col-md-2'></div>
+</div>
+
+<div class="row">
+<div class='col-md-2'></div>
+<div class='col-md-8'>
+  	<span class='ifttt'><p>if</span>
+  	<span><a href='#' onclick="getChannels();">this</a></span>
+  	<span>thenthat</p></span>
+</div>
+<div class='col-md-2'></div>
+</div>
+
+<div class="row step1" id="step1">
+<div class='col-md-2'></div>
+<div class='col-md-8'>
+	<hr>
+	<h2>Choose Trigger Channel</h2>
+</div>
+<div class='col-md-2'></div>
+</div>
+
+<div class="row">
+	<div class="col-md-2"></div>
+	<div class="col-md-4 channel_list"></div>
+	<div class="col-md-4 trigger_list"></div>
+	<div class="col-md-2"></div>
+</div>
+
+<div class="row">
+<div class='col-md-2'></div>
+<div class='col-md-8'>
+	<div>
+	<p class="selected_trigger_channel"></p>
+	</div>
+
+	<div>
+	<p class="selected_trigger"></p>
+	</div>
+</div>
+<div class='col-md-2'></div>
+</div>
+
+<div class="row">
+<div class='col-md-1'></div>
+<div class='col-md-10'></div>
+<div class='col-md-1'></div>
+</div>
+
+</div>
+{/body}

@@ -1,0 +1,48 @@
+{
+	"agents": [
+	{
+		"agent_type" : "payment_txn_listener",
+		"agent_code" : "",
+		"filters" : "",
+		"params": {
+			"key1" : "value1",
+			"key2" : {
+				"subkey1" : "subvalue1"
+			}
+		}
+	}
+	,{
+		"agent_type" : "http",
+		"agent_code" : "",
+		"filters" : "",
+		"params": {
+			"key5" : "value5",
+			"key2" : {
+				"subkey1" : "subvalue1"
+			}
+		}
+	}
+	,{
+		"agent_type" : "aggregate",
+		"agent_code" : "",
+		"filters" : "",
+		"params": {
+			"key10" : "value10",
+			"key2" : {
+				"subkey1" : "subvalue1"
+			}
+		}
+	},
+	{
+		"agent_type" : "string_builder",
+		"agent_code" : "",
+		"filters" : "",
+		"params": {
+			"enrollments" : "@@enrollment_count@@",
+			"format" : {
+				"mail_body" : "Total Number of enrollments done today is {{enrollments}}.\n-Lego Team"
+			}
+		}
+	}
+	]
+}	

@@ -1,0 +1,123 @@
+{>"layouts/master" /}
+
+<script>
+$(function(){
+	var a = "{dup_data.program_code}";
+	var offer_program_id = "{dup_data.reward_model.reward_offer_spec.offer_program_id}";
+	console.log("ID:" + offer_program_id);
+	console.log(a);
+	
+	$('.change_flag').change(function(){
+
+		if($('#'+this.id).val() != $('#pre_' + this.id).val())
+		{
+
+			$('#flag_'+this.id).val("1");
+			alert($('#flag_'+this.id).val());
+		}
+
+		if($('#'+this.id).val() == $('#pre_' + this.id).val())
+		{
+
+			$('#flag_'+this.id).val("0");
+			alert($('#flag_'+this.id).val());
+		}
+	});
+
+
+
+/*
+$('patch_reward').click(function(){
+
+});
+*/
+});
+</script>
+
+{<body}
+<div class="pure-g">
+<div class="pure-u-9-24">
+<form class="pure-form pure-form-aligned" method='POST' action='/call_update_reward'>
+
+<div class="pure-control-group">
+<label>Edit PSB: </label>
+<a href='/PSB/edit?offer_program_id={dup_data.reward_model.reward_offer_spec.offer_program_id}'>{dup_data.reward_model.reward_offer_spec.offer_program_id}</a>
+</div>
+
+<div class="pure-control-group">
+<label>Program Code</label>
+<input type="text" id="program_code" name="program_code" value="{dup_data.program_code}" readonly><span></span><hr>
+</div>
+<div class="pure-control-group">
+<label><u>Locales:</u></label>(program name, program description and locale name are updated as one)
+</div>
+{#dup_data.locales}
+	<div class="pure-control-group">
+	<label>Program Name</label>
+	<input type="text" id="program_name" name="program_name" value="{program_name}">
+	</div>
+
+	<div class="pure-control-group">
+	<label>Program Description</label>
+	<input type="text" id="program_description" name="program_description" value="{program_description}">
+	</div>
+
+	<div class="pure-control-group">
+	<label>Locale Name: </label>
+	<input type="text" id="locale_name" name="locale_name" value="{locale_name}">
+	</div>
+{/dup_data.locales}
+<hr>
+<div class="pure-control-group">
+<label>Program Start Time: </label>
+<input type="text" id="program_start_time" name="program_start_time" value="{dup_data.program_start_time}">
+</div>
+<div class="pure-control-group">
+<label>Program End Time: </label>
+<input type="text" id="program_end_time" name="program_end_time" value="{dup_data.program_end_time}">
+</div>
+<div class="pure-control-group">
+<label>Lifecycle Status: </label>
+<input type="text" id="lifecycle_status" name="lifecycle_status" value="{dup_data.lifecycle_status}">
+</div>
+<div class="pure-control-group">
+<label>Max Reward Count: </label>
+<input type="text" class="change_flag" id="max_reward_count" name="max_reward_count" value="{dup_data.reward_model.max_reward_count}">
+<input type="hidden" id="pre_max_reward_count" name="pre_max_reward_count" value="{dup_data.reward_model.max_reward_count}">
+<input type="hidden" class="change_flag" id="flag_max_reward_count" name="flag_max_reward_count" value="0">
+</div>
+<div class="pure-control-group">
+
+
+<div class="pure-control-group">
+<label>Value Issued Currency: </label>
+<input type="text" class="change_flag" id="value_issued_currency" name="value_issued_currency" value="{dup_data.reward_model.reward_offer_spec.value_issued.currency}">
+<input type="hidden" id="pre_value_issued_currency" name="pre_value_issued_currency" value="{dup_data.reward_model.reward_offer_spec.value_issued.currency}">
+<input type="hidden"  id="flag_value_issued_currency" name="flag_value_issued_currency" value="0">
+</div>
+<div class="pure-control-group">
+<label>Value Issued value: </label>
+<input type="text" class="change_flag" id="value_issued_value" name="value_issued_value" value="{dup_data.reward_model.reward_offer_spec.value_issued.value}">
+<input type="hidden" id="pre_value_issued_value" name="pre_value_issued_value" value="{dup_data.reward_model.reward_offer_spec.value_issued.value}">
+<input type="hidden"  id="flag_value_issued_value" name="flag_value_issued_value" value="0">
+</div>
+<div class="pure-control-group">
+<label>Min Transaction Amount: </label>
+<input type="text" class="change_flag" id="minimum_transaction_amount_value" name="minimum_transaction_amount_value" value="{dup_data.event_qualification_criteria.payment_event.minimum_transaction_amount.value}">
+<input type="hidden" id="pre_minimum_transaction_amount_value" name="pre_minimum_transaction_amount_value" value="{dup_data.event_qualification_criteria.payment_event.minimum_transaction_amount.value}">
+<input type="hidden"  id="flag_minimum_transaction_amount_value" name="flag_minimum_transaction_amount_value" value="0">
+</div>
+<div class="pure-control-group">
+<label>Transaction Currency: </label>
+<input type="text" class="change_flag" id="minimum_transaction_amount_currency" name="minimum_transaction_amount_currency" value="{dup_data.event_qualification_criteria.payment_event.minimum_transaction_amount.currency}">
+<input type="hidden" id="pre_minimum_transaction_amount_currency" name="pre_minimum_transaction_amount_currency" value="{dup_data.event_qualification_criteria.payment_event.minimum_transaction_amount.currency}">
+<input type="hidden"  id="flag_minimum_transaction_amount_currency" name="flag_minimum_transaction_amount_currency" value="0">
+</div>
+<input type = "hidden" name = "_csrf" value = "{_csrf}" />
+<button class="pure-button pure-button-primary" type="submit">Update</button>
+</form>
+</div>
+<div class="pure-u-15-24">
+</div>
+</div>
+{/body}

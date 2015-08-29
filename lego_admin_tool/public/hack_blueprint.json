@@ -1,0 +1,193 @@
+{
+  "code": "hack_123",
+  "title": "Blueprint for Hackathon - charity",
+  "lifecycle_status": "ENABLED",
+  "agents": [
+    {
+      "code": "activity_storeevent_listener",
+      "type": "activity_storeevent_listener",
+      "params": {
+        "filter": "data.counterAccountNumber == xyz && data.grossUsdAmount < -100 && (((flags04 / 1073741824) % 2 == 1) || ((flags04 / 536870912) % 2 == 1)) && (((flags / 131072) % 2 == 1) || ((flags05 / 134217728) % 2 == 1)) && data.sourceTypeId == 85"
+      }
+    },
+  
+  
+    {
+      "code": "country_check_string_builder",
+      "type": "string_builder",
+      "params": {
+        "format": "/v1/customer/accounts/{{receiver_account_number}}",
+        "data": {
+          "receiver_account_number": "@@receiver_account_number@@"
+        }
+      }
+    },
+  
+  
+    {
+      "code": "country_information",
+      "type": "http",
+      "params": {
+        "service": "userplatformserv",
+        "method": "GET",
+        "url": "@@url@@",
+        "header": {
+          "X-PAYPAL-SECURITY-CONTEXT": {
+            "actor": {
+              "account_number": "0",
+              "id": "0",
+              "auth_claims": [
+                "USERNAME",
+                "PASSWORD"
+              ]
+            },
+            "scopes": [
+              "*"
+            ]
+          }
+        }
+      }
+    },
+  
+  
+    {
+      "code": "if_country_check",
+      "type": "filter",
+      "params": {
+        "country_code": "@@country_code@@",
+        "filter": "data.country_code == 'US'"
+      }
+    },
+  
+  
+    {
+      "code": "counter",
+      "type": "aggregate",
+      "params": {
+        "keys": [
+          "account_number"
+        ],
+        "input_data": {
+          "account_number": "@@account_number@@",
+          "visit": 1
+        },
+        "sum": [
+          "visit"
+        ]
+      }
+    },
+  
+  
+    {
+      "code": "only_once",
+      "type": "filter",
+      "params": {
+        "visit": "@@visit@@",
+        "filter": "data.visit == 1"
+      }
+    },
+  
+  
+    {
+      "code": "encryption",
+      "type": "encryption",
+      "params": {
+        "id": "@@id@@",
+        "type": "PAYPAL_ACCOUNT"
+      }
+    },
+  
+  
+    {
+      "code": "payout_operator",
+      "type": "http",
+      "params": {
+        "service": "payoutserv",
+        "url": "/v1/payments/payouts?sync_mode=true",
+        "method": "POST",
+        "body": {
+          "sender_batch_header": {
+            "email_subject": "$5 to your fav charity !!"
+          },
+          "items": [
+            {
+              "recipient_type": "PAYPAL_ID",
+              "amount": {
+                "value": "1.00",
+                "currency": "USD"
+              },
+              "receiver": "@@encrypted_account_number@@",
+              "note": "newnote12",
+              "sender_item_id": "sender_item_ids"
+            }
+          ]
+        },
+        "header": {
+          "X-PAYPAL-SECURITY-CONTEXT": {
+            "actor": {
+              "account_number": "2152331553409959696",
+              "id": "1837520948203984320",
+              "auth_claims": [
+                "USERNAME",
+                "PASSWORD"
+              ]
+            },
+            "scopes": [
+              "*"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "data_flow": [
+    {
+      "from_agent": "activity_storeevent_listener",
+      "from_path": "counterAccountNumber",
+      "to_agent": "country_check_string_builder",
+      "to_placeholder": "receiver_account_number"
+    },
+    {
+      "from_agent": "country_check_string_builder",
+      "from_path": "result",
+      "to_agent": "country_information",
+      "to_placeholder": "url"
+    },
+    {
+      "from_agent": "country_information",
+      "from_path": "body.legal_country_code",
+      "to_agent": "if_country_check",
+      "to_placeholder": "country_code"
+    },
+    {
+      "from_agent": "if_country_check",
+      "from_path": "country_code",
+      "to_agent": "counter",
+      "to_placeholder": "country_code"
+    },
+    {
+      "from_agent": "activity_storeevent_listener",
+      "from_path": "accountNumber",
+      "to_agent": "counter",
+      "to_placeholder": "account_number"
+    },
+    {
+      "from_agent": "counter",
+      "from_path": "visit",
+      "to_agent": "only_once",
+      "to_placeholder": "visit"
+    },
+    {
+      "from_agent": "counter",
+      "from_path": "account_number",
+      "to_agent": "encryption",
+      "to_placeholder": "id"
+    },
+    {
+      "from_agent": "encryption",
+      "from_path": "result",
+      "to_agent": "payout_operator",
+      "to_placeholder": "encrypted_account_number"
+    }
+  ]
+}

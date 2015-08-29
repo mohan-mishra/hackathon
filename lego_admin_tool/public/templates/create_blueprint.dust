@@ -1,0 +1,259 @@
+{>"layouts/master" /}
+
+<link rel="stylesheet" type="text/css" href="../css/dummyy.css">
+<script type="text/javascript" src="../js/jsPlumb/dist/js/dom.jsPlumb-1.7.3.js"></script>
+<script type="text/javascript">
+
+var agentsarray = [];
+var agentsjson = {};
+var dataflowarray = [];
+var dataflowjson = {};
+
+    jsPlumb.ready(function() {
+
+        $('body').on('click', '#create_blueprint', function(e){
+            agentsarray = [];
+            agentsjson = {};
+            dataflowarray = [];
+            dataflowjson = {};
+            $('.agent').each(function(){
+                var final_agent_name = $(this)[0].childNodes[0].childNodes[0].nodeValue;  /*div->title->text*/
+                var final_agent_code = $(this)[0].childNodes[1].childNodes[0].childNodes[1].value;  /*div-agentcontent->label0->input0*/
+                var final_agent_filter = $(this)[0].childNodes[1].childNodes[1].childNodes[1].value;    /*div-agentcontent->label1->input1*/
+                var final_agent_params = $(this)[0].childNodes[1].childNodes[2].childNodes[1].value;    /*div-agentcontent->label2->input2*/
+                console.log("title:"+final_agent_name+" code:"+final_agent_code+" filter:"+final_agent_filter+" params:"+final_agent_params);
+                agentsarray.push({
+                    "code": final_agent_code,
+                    "type": final_agent_name,
+                    "filter": final_agent_filter,
+                    "params": final_agent_params
+                });
+            });
+
+            $('.dataflow').each(function(){
+                var final_from_agent = $(this)[0].childNodes[0].childNodes[0].childNodes[1].value;
+                var final_to_agent = $(this)[0].childNodes[0].childNodes[1].childNodes[1].value;
+                
+                var all_from_path_dom = $(this).find(".from_path");
+                var all_from_path_values = [];
+                all_from_path_dom.each(function(){
+                    all_from_path_values.push($(this)[0].value);
+                });
+
+                var all_to_placeholder_dom = $(this).find(".to_placeholder");
+                var all_to_placeholder_values = [];
+                all_to_placeholder_dom.each(function(){
+                    all_to_placeholder_values.push($(this)[0].value);
+                });
+
+                for(var i = 0; i < all_from_path_values.length; i++){
+                    dataflowarray.push({
+                        "from_agent" : final_from_agent,
+                        "from_path" : all_from_path_values[i],
+                        "to_agent" : final_to_agent,
+                        "to_placeholder" : all_to_placeholder_values[i]
+                    });
+                }
+            });
+
+            agentsjson = {"agents":agentsarray};
+            console.log(agentsjson,null,2);
+
+            dataflowjson = {"data_flow" : dataflowarray};
+            console.log(dataflowjson,null,2);
+
+            var dialogdiv = $('<div>').attr({'id':'dialog', 'title':'Basic Dialog'});
+            var dialogp = $('<p>').text(JSON.stringify(dataflowjson,null,2));
+            dialogdiv.append(dialogp);
+            dialogdiv.dialog();
+        });
+
+        $(function() {
+            $( "#dialog" ).dialog();
+        });
+        
+        var agents_array_raw = [];
+
+        $.getJSON('../agents.json', function(data){
+        jsondata = data;
+        agents_array_raw = data.agents;
+        var html = '';
+        var len = data.agents.length;
+        for (var i = 0; i< len; i++) {
+            var newObj = $('<button>').attr('id', data.agents[i].agent_type).addClass('agent_button');
+            newObj.text(data.agents[i].agent_type);
+            $('#show_agents').append(newObj);
+        }
+        });
+
+        $('body').on('click', '.addDataButton', function(e){
+            var a = $('<input size="15" type="text" class="from_path" name="from_path[]">');
+            var b = $('<input size="15" type="text" class="to_placeholder" name="to_placeholder[]">'); 
+            var br = $('<br>');
+            var div = $('<div>').addClass('dataflowFields');
+            var deleteButton = $('<i class="fa fa-minus-circle deleteData"></i>');
+            div.append(a);
+            div.append($("<label>-></label>"));
+            div.append(b);
+            div.append(deleteButton);
+            $(this).parent("div").append(div);
+        });
+
+        $("body").on("click", ".deleteData", function (e) {
+            $(this).parent("div").remove();
+         });
+
+        jsPlumb.setContainer($('#container_x'));
+
+        $('body').on('click', '#add_dataflow', function(e) {
+            console.log("buttonclicked");
+            var newDataflow = $('<div>').addClass('dataflow');
+            var newDataflowTitle = $('<div>').addClass('dataflowtitle');
+            var newDataflowContent = $('<div>').addClass('dataflowcontent');
+
+            /*adding the dataflow content here*/
+            var addData = $('<button>').addClass('addDataButton').text("Add row");
+            newDataflowContent.append(addData);
+
+            var from_agent_label = $('<label>').text('from_agent: ').css('display','block');
+            var from_agent = $('<input>').attr({"readonly": true, "name":"from_agent"}).addClass('from_agent');
+            var to_agent_label = $('<label>').text('to_agent: ').css('display','block');
+            var to_agent = $('<input>').attr({"readonly": true, "name":"to_agent"}).addClass('to_agent');
+            from_agent.appendTo(from_agent_label);
+            to_agent.appendTo(to_agent_label);
+
+            var extraDiv = $('<div>').addClass('connect').text('Connect from here');
+
+            newDataflowTitle.append(from_agent_label);
+            newDataflowTitle.append(to_agent_label);
+            newDataflow.append(newDataflowTitle);
+            newDataflow.append(newDataflowContent);
+            newDataflow.append(extraDiv);
+
+            $('#container_x').append(newDataflow);
+
+            jsPlumb.draggable(newDataflow, {
+                containment: 'parent'
+            });
+
+            jsPlumb.makeTarget(newDataflow, {
+                endpoint: "Dot",
+                connector: [ "Flowchart", { stub: [40, 60], gap: 0, cornerRadius: 5, alwaysRespectStubs: true } ],
+                anchor: 'Continuous',
+                connectorOverlays: [ [ "Arrow", { location:1 } ] ]
+            });
+        
+            jsPlumb.makeSource(extraDiv, {
+                endpoint: "Blank",
+                connector: [ "Flowchart", { stub: [40, 60], gap: 0, cornerRadius: 5, alwaysRespectStubs: true } ],
+                parent: newDataflow,
+                anchor: 'Continuous',
+                connectorOverlays: [ [ "Arrow", { location:1 } ] ]
+            }); 
+
+            newDataflow.dblclick(function(e) {
+                jsPlumb.detachAllConnections($(this));
+                $(this).remove();
+                e.stopPropagation();
+            });
+        });
+
+        jsPlumb.bind("connection", function(info) {
+            console.log(info);
+            if(info.connection.source.parentElement.className.indexOf("agent")>=0 && info.connection.target.className.indexOf("dataflow")>=0)
+            {
+                var sourceid = info.connection.sourceId;
+                var targetid = info.connection.targetId;
+                $("#"+targetid).find("input")[0].value = $("#"+sourceid).parent().find("input")[0].value;
+            }
+
+            if(info.connection.target.className.indexOf("agent")>=0 && info.connection.source.parentElement.className.indexOf("dataflow")>=0)
+            {
+                var sourceid = info.connection.sourceId;
+                var targetid = info.connection.targetId;
+                $("#"+sourceid).parent().find("input")[1].value = $("#"+targetid).find("input")[0].value;
+            }
+
+            if(info.connection.target.className.indexOf("agent")>=0 && info.connection.source.parentElement.className.indexOf("agent")>=0)
+            {
+                console.log("no dataflow case");
+            }
+        });
+
+
+
+        var i = 0;
+        $('body').on('click', 'button.agent_button', function(e) {
+            var newAgent = $('<div>').attr({id: i + "_" + this.id, name: this.id}).addClass('agent');
+            console.log(i + "_" + this.id);
+            var newAgentType = this.id;
+            var title = $('<div>').addClass('title').text(this.id);
+            var newAgentParams = JSON.stringify($.grep(agents_array_raw,function(n,i){if(agents_array_raw[i].agent_type == newAgentType){
+                return n;
+            }})[0].params);
+
+
+            var agent_code_label = $('<label>').text('Code: ').css('display','block');
+            var agent_code_input = $('<input>').attr('id', 'agent_code').addClass('agent_code');
+            agent_code_input.appendTo(agent_code_label);
+
+            var params_label = $('<label>').text('params: ').css('display','block');
+            var params_input = $('<textarea>').attr('id', 'params').addClass('params');
+            params_input.text(newAgentParams);
+            params_input.appendTo(params_label);
+
+            var filter_label = $('<label>').text('Filter: ').css('display','block');
+            var filter_input = $('<input>').attr('id', 'filter').addClass('filter');
+            filter_input.appendTo(filter_label);
+
+            var agent_data = $('<div>').addClass('agentData');
+            var extraDiv = $('<div>').addClass('connect').text('Connect from here');
+            agent_data.append(agent_code_label);
+            agent_data.append(filter_label);
+            agent_data.append(params_label);
+            newAgent.append(title);
+            newAgent.append(agent_data);
+            newAgent.append(extraDiv);
+
+            $('#container_x').append(newAgent);
+
+            jsPlumb.makeTarget(newAgent, {
+                endpoint:"Dot",
+                connector: [ "Flowchart", { stub: [40, 60], gap: 0, cornerRadius: 5, alwaysRespectStubs: true } ],
+          anchor: 'Continuous',
+          connectorOverlays: [ [ "Arrow", { location:1 } ] ]
+        });
+        
+        jsPlumb.makeSource(extraDiv, {
+            endpoint:"Blank",
+            connector: [ "Flowchart", { stub: [40, 60], gap: 0, cornerRadius: 5, alwaysRespectStubs: true } ],
+          parent: newAgent,
+          anchor: 'Continuous',
+          connectorOverlays: [ [ "Arrow", { location:1 } ] ]
+        });     
+        
+        jsPlumb.draggable(newAgent, {
+          containment: 'parent'
+        });
+
+        newAgent.dblclick(function(e) {
+          jsPlumb.detachAllConnections($(this));
+          $(this).remove();
+          e.stopPropagation();
+        });
+        i++;
+    });
+
+});  
+  </script>
+
+
+
+{<body}
+    <button id="add_dataflow">Add Dataflow</button>
+    <div id="show_agents"></div>
+    <div id='dummy'></div>
+    <div id="container_x"></div>
+    <button id="create_blueprint">Create Blueprint</button>
+    
+{/body}
